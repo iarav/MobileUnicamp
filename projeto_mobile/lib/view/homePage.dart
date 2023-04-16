@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/view/loginPage.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.title});
+
+  final String title;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -57,7 +59,7 @@ class _HomePageState extends State<HomePage> {
       onPressed: (){
          Navigator.push(
           context, MaterialPageRoute(
-            builder: (_) => const LoginPage(title: "Du e Paulinho Churrascos",),
+            builder: (_) => LoginPage(title: widget.title,),
           )
         );
       }, 

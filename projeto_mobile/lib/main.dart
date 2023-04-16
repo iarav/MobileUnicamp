@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/model/routes.dart';
 import 'package:projeto_mobile/view/homePage.dart';
 
 void main() {
@@ -10,11 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Projeto',
+      title: "Du e Paulinho Churrascos",
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: const Color.fromARGB(255, 1, 29, 62),
       ),
-      home: const HomePage(),
+      routes: Routes.getRoutes(), // register your routes here
+      home: const HomePage(title: "Du e Paulinho Churrascos",),
     );
   }
 }

@@ -1,5 +1,7 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/model/routes.dart';
+import 'package:projeto_mobile/view/opcoesReserva.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
@@ -18,7 +20,7 @@ class _MainPageState extends State<MainPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
-          backgroundColor: const Color.fromARGB(255, 1, 29, 62),
+          backgroundColor: Theme.of(context).primaryColor,
           bottom: const TabBar(tabs: [
             Tab(
               child: Text(
@@ -42,9 +44,7 @@ class _MainPageState extends State<MainPage> {
         ),
         body: TabBarView(
           children: [
-          Container(
-            color: Color.fromARGB(255, 91, 108, 153),
-          ),
+          const OpcoesDeReserva(),
           Container(
             color: Color.fromARGB(255, 131, 216, 4),
           ),
@@ -55,7 +55,10 @@ class _MainPageState extends State<MainPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            // Add your onPressed code here!
+            Navigator.pushNamed(
+              context,
+              Routes.fazerReserva, //define your route name
+            );
           },
           label: const Text('Fazer Reserva'),
           backgroundColor: const Color.fromARGB(255, 4, 64, 216),
