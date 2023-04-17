@@ -1,27 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/blocs/tema_event.dart';
-import 'package:flutter_application_1/blocs/tema_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_application_1/blocs/tema_bloc.dart';
+
+import 'blocs/tema_bloc.dart';
+import 'blocs/tema_event.dart';
+import 'blocs/tema_state.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TemaBloc(),
-      child: MaterialApp(
-        title: 'atividade 2',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-        ),
-        home: const MyHomePage(title: 'pagina inicial'),
+      create: (context) => ThemeBloc(),
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+          builder: (BuildContext context, state){
+          return MaterialApp(
+            title: 'atividade 2',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              useMaterial3: true,
+              primaryColor: state.color,
+            ),
+            home: const MyHomePage(title: 'pagina inicial'),
+          );
+        }
       ),
     );
   }
@@ -39,11 +45,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TemaBloc, TemaState>(
+    return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (BuildContext context, state){
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: state.cor,
+            backgroundColor: Theme.of(context).primaryColor,
             centerTitle: true,
             title: const Text("TRABALHO 2"),
             //backgroundColor: cor,
@@ -53,12 +59,12 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //se retornar true chama "imagemIara()", ao contrário chama "imagemIsabella()"
-              state.foto ? imagemIara() : imagemIsabella(),
+              state.photo ? imagemIara() : imagemIsabella(),
               //primeiro botão
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    context.read<TemaBloc>().add(TemaInitialEvent());
+                    context.read<ThemeBloc>().add(ThemeLightEvent());
                   });
                 },
                 style: ElevatedButton.styleFrom(
@@ -71,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    context.read<TemaBloc>().add(TemaChangeEvent());
+                    context.read<ThemeBloc>().add(ThemeDarkEvent());
                   });
                 },
                 style: ElevatedButton.styleFrom(
@@ -83,14 +89,14 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
           floatingActionButton: FloatingActionButton(
-            backgroundColor: state.cor,
+            backgroundColor: Theme.of(context).primaryColor,
             onPressed: () {
               setState(() {
-                if (state.foto == true) {
-                  context.read<TemaBloc>().add(TemaChangeEvent());
+                if (state.photo == true) {
+                  context.read<ThemeBloc>().add(ThemeDarkEvent());
                 }
                 else{
-                  context.read<TemaBloc>().add(TemaInitialEvent());
+                  context.read<ThemeBloc>().add(ThemeLightEvent());
                 }
               });
             },

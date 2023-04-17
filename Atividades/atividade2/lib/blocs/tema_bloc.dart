@@ -1,17 +1,17 @@
+import 'package:atividade2/blocs/tema_event.dart';
+import 'package:atividade2/blocs/tema_state.dart';
 import 'package:bloc/bloc.dart';
-import 'package:flutter_application_1/blocs/tema_event.dart';
-import 'package:flutter_application_1/blocs/tema_state.dart';
 
-class TemaBloc extends Bloc<TemaEvent, TemaState> {
-  TemaBloc() : super(TemaInitial()) {
+class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
+  ThemeBloc() : super(ThemeDark()){
     
-    on<TemaInitialEvent>((event, emit){
-        emit(TemaInitial());
+    on<ThemeLightEvent>((event, emit){
+        emit(ThemeLight());
       }
     );
 
-    on<TemaChangeEvent>((event, emit){
-        emit(TemaChange());
+    on<ThemeDarkEvent>((event, emit){
+        emit(ThemeDark());
       }
     );
   }
