@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/view/loginPage.dart';
 
+import '../model/routes.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
 
@@ -57,10 +59,9 @@ class _HomePageState extends State<HomePage> {
   Widget botaoEntrar(){
     return ElevatedButton(
       onPressed: (){
-         Navigator.push(
-          context, MaterialPageRoute(
-            builder: (_) => LoginPage(title: widget.title,),
-          )
+        Navigator.pushNamed(
+          context,
+          Routes.login, //define your route name
         );
       }, 
       style: ButtonStyle(

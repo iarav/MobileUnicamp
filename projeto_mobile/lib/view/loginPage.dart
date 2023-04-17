@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/view/mainPage.dart';
 import '../model/pessoaData.dart';
+import '../model/routes.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -22,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
        appBar: AppBar(
           title: Text(widget.title),
-          backgroundColor: const Color.fromARGB(255, 1, 29, 62),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -130,10 +131,9 @@ class _LoginPageState extends State<LoginPage> {
         if( _formKey.currentState!.validate()){
           _formKey.currentState!.save();
           _pessoaData.doSomething();
-          Navigator.push(
-            context, MaterialPageRoute(
-              builder: (_) => MainPage(title: title,),
-            )
+          Navigator.pushNamed(
+            context,
+            Routes.mainPage, //define your route name
           );
         }
       }, 
