@@ -130,11 +130,14 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: (){
         if( _formKey.currentState!.validate()){
           _formKey.currentState!.save();
-          _pessoaData.doSomething();
-          Navigator.pushNamed(
-            context,
-            Routes.mainPage, //define your route name
-          );
+          if(_pessoaData.cpf == 'admin' && _pessoaData.password == 'admin'){
+            //ADMIN pagina
+          }else{
+            Navigator.pushNamed(
+              context,
+              Routes.mainPage, //define your route name
+            );
+          }
         }
       }, 
       style: ButtonStyle(
