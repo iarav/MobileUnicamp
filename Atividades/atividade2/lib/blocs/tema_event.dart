@@ -1,4 +1,4 @@
-abstract class TemaEvent {}
+abstract class ThemeEvent {}
 
-class TemaInitialEvent extends TemaEvent{}
-class TemaChangeEvent extends TemaEvent{}
+class ThemeLightEvent extends ThemeEvent{}
+class ThemeDarkEvent extends ThemeEvent{}
