@@ -125,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-    Widget botaoEntrar(String title){
+  Widget botaoEntrar(String title){
     return ElevatedButton(
       onPressed: (){
         if( _formKey.currentState!.validate()){

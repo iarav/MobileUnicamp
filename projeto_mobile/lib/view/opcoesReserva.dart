@@ -1,5 +1,6 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/view/selecaoDataOpcoesReserva.dart';
 import '../model/routes.dart';  //import your routes.dart file
 import '../model/complete_data.dart';
 
@@ -32,9 +33,7 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
           ],
         ),
         const SizedBox(height: 20,),
-        Expanded(
-          child: Container(child: myList())
-        ),
+        Expanded(child: _buildWidget()),
       ],
     );
   }
@@ -60,6 +59,17 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
         ),
       ],
     );
+  }
+
+   Widget _buildWidget() {
+    switch (completeModel.radioValue) {
+      case 1:
+        return Container(child: myList());
+      case 2:
+        return const SelecaoData();
+      default:
+        return Container();
+    }
   }
 
   Widget myList(){
