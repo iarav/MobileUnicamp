@@ -14,54 +14,54 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final PessoaData _pessoaData = PessoaData();
 
   @override
   Widget build(BuildContext context) {
+    var pessoaCpf = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
-       appBar: AppBar(
+        appBar: AppBar(
           title: Text(widget.title),
           backgroundColor: Theme.of(context).primaryColor,
         ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text(
-                "Login:",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 30,
-                ),
-              ),
-            ],
-          ),
-          Form(
-            key: _formKey,
-            child: Column(
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 35),    
-                cpfField(),
-                const SizedBox(height: 25),
-                passwordField(),
-                const SizedBox(height: 25),
-                botaoEntrar(widget.title),
+                Text(
+                  "Login:",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      )
-    );
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  const SizedBox(height: 35),
+                  cpfField(pessoaCpf),
+                  const SizedBox(height: 25),
+                  passwordField(),
+                  const SizedBox(height: 25),
+                  botaoEntrar(widget.title),
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 
-  Widget cpfField(){
+  Widget cpfField(cpf) {
     return SizedBox(
       width: 250,
       child: TextFormField(
+        initialValue: cpf ?? "",
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: 'CPF',
@@ -74,24 +74,24 @@ class _LoginPageState extends State<LoginPage> {
             color: Colors.grey[400],
           ),
         ),
-        validator: (String? value){
-          if(value!=null){
-            if(value.isEmpty){
+        validator: (String? value) {
+          if (value != null) {
+            if (value.isEmpty) {
               return "Campo obrigatório.";
             }
-          }else{
+          } else {
             return "Insira algum valor.";
           }
           return null;
         },
-        onSaved: (String? value){
+        onSaved: (String? value) {
           _pessoaData.cpf = value ?? "";
         },
       ),
     );
   }
 
-  Widget passwordField(){
+  Widget passwordField() {
     return SizedBox(
       width: 250,
       child: TextFormField(
@@ -108,55 +108,54 @@ class _LoginPageState extends State<LoginPage> {
             color: Colors.grey[400],
           ),
         ),
-        validator: (String? value){
-          if(value!=null){
-            if(value.isEmpty){
+        validator: (String? value) {
+          if (value != null) {
+            if (value.isEmpty) {
               return "Campo obrigatório.";
             }
-          }else{
+          } else {
             return "Insira algum valor.";
           }
           return null;
         },
-        onSaved: (String? value){
+        onSaved: (String? value) {
           _pessoaData.password = value ?? "";
         },
       ),
     );
   }
 
-  Widget botaoEntrar(String title){
+  Widget botaoEntrar(String title) {
     return ElevatedButton(
-      onPressed: (){
-        if( _formKey.currentState!.validate()){
-          _formKey.currentState!.save();
-          if(_pessoaData.cpf == 'admin' && _pessoaData.password == 'admin'){
-            //ADMIN pagina
-          }else{
-            Navigator.pushNamed(
-              context,
-              Routes.mainPage, //define your route name
-            );
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            _formKey.currentState!.save();
+            if (_pessoaData.cpf == 'admin' && _pessoaData.password == 'admin') {
+              //ADMIN pagina
+            } else {
+              Navigator.pushNamed(
+                context,
+                Routes.mainPage, //define your route name
+              );
+            }
           }
-        }
-      }, 
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 7, 24, 180)),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
+        },
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+                const Color.fromARGB(255, 7, 24, 180)),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
+            )),
+        child: const Text(
+          "Entrar",
+          style: TextStyle(
+            fontSize: 15,
           ),
-        ),
-        padding: MaterialStateProperty.all<EdgeInsets>(
-          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
-        )
-      ),
-      child: const Text(
-        "Entrar",
-        style: TextStyle(
-          fontSize: 15,
-        ),
-      )
-    );
+        ));
   }
 }
