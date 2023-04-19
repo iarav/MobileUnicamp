@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/model/routes.dart';
 import 'package:projeto_mobile/view/opcoesReserva.dart';
 
+import 'minhasReservas.dart';
+import 'sobreAChurrascaria.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
 
@@ -42,15 +45,11 @@ class _MainPageState extends State<MainPage> {
             ),
           ]),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
-          const OpcoesDeReserva(),
-          Container(
-            color: Color.fromARGB(255, 131, 216, 4),
-          ),
-          Container(
-            color: Color.fromARGB(255, 216, 15, 4),
-          ),
+          OpcoesDeReserva(),
+          MinhasReservas(),
+          SobreAChurrascaria(),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(

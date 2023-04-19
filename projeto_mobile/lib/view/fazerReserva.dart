@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/model/reservaData.dart';
 
 import '../model/complete_data.dart';
+import '../model/routes.dart';
 
 class FazerReserva extends StatefulWidget {
   const FazerReserva({super.key, required this.title});
@@ -229,6 +230,17 @@ class _FazerReservaState extends State<FazerReserva> {
   Widget botaoFazerReserva(){
     return ElevatedButton(
       onPressed: (){
+        if(_selectedDate != null && _reservaData.combo != null){
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => dialgoReservaEfeuada('A reserva foi efetuada com sucesso!')
+          );
+        }else{
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => dialgoReservaEfeuada('Preencha todos os campos!')
+          );
+        }
       }, 
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 7, 24, 180)),
@@ -247,6 +259,46 @@ class _FazerReservaState extends State<FazerReserva> {
           fontSize: 15,
         ),
       )
+    );
+  }
+
+  Widget dialgoReservaEfeuada(String texto){
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(height: 10),
+            Text(
+              texto,
+              style: const TextStyle( 
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                if(texto == 'A reserva foi efetuada com sucesso!'){
+                  Navigator.pushNamed(
+                    context,
+                    Routes.mainPage, //define your route name
+                  );
+                }
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text('OK'),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

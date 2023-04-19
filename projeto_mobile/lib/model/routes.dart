@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/view/loginPage.dart';
-import 'package:projeto_mobile/view/mainPage.dart';
 
+import '../cadastroPage.dart';
 import '../view/fazerReserva.dart';
+import '../view/loginPage.dart';
+import '../view/mainPage.dart';
 
 
 class Routes {

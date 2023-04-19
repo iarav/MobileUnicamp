@@ -1,6 +1,5 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/view/mainPage.dart';
 import '../model/pessoaData.dart';
 import '../model/routes.dart';
 
@@ -28,9 +27,9 @@ class _LoginPageState extends State<LoginPage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Text(
                   "Login:",
                   textAlign: TextAlign.center,

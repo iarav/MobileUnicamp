@@ -28,9 +28,9 @@ class _CadastroPageState extends State<CadastroPage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Text(
                   "Cadastro:",
                   textAlign: TextAlign.center,
