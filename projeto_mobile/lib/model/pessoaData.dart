@@ -5,6 +5,7 @@ class PessoaData{
   String email = "";
   String tel = "";
   String password = "";
+  String confirmacaoPassword = "";
 
 
   doSomething(){

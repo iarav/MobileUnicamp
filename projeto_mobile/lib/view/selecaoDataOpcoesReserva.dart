@@ -1,7 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/model/routes.dart';
+
+import '../model/routes.dart';
 
 class SelecaoData extends StatefulWidget {
   const SelecaoData({super.key});
@@ -101,7 +101,6 @@ class _SelecaoDataState extends State<SelecaoData> {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    String dataInformada = '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}';
                                     Navigator.pushNamed(
                                       context,
                                       Routes.fazerReserva, //define your route name

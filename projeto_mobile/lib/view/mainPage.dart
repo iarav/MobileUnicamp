@@ -1,16 +1,16 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/model/routes.dart';
-import 'package:projeto_mobile/view/opcoesReserva.dart';
 
+import '../model/routes.dart';
 import 'minhasReservas.dart';
+import 'opcoesReserva.dart';
 import 'sobreAChurrascaria.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
 
   final String title;
-  
+
   @override
   State<MainPage> createState() => _MainPageState();
 }
@@ -22,7 +22,61 @@ class _MainPageState extends State<MainPage> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          automaticallyImplyLeading: false,
+          actions: [
+            SizedBox(
+              height: 50,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.logout,
+                      color: Color(0xFF05173D),
+                    ),
+                    onPressed: () {
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                    },
+                  ),
+                  // const Text(
+                  //   "Sair",
+                  //   style: TextStyle(
+                  //       fontFamily: 'bright', color: Color(0xFF05173D)),
+                  // ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 50,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.account_circle,
+                      color: Color(0xFF05173D),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        Routes.editarPerfil, //define your route name
+                      );
+                    },
+                  ),
+                  // const Text(
+                  //   "Editar perfil",
+                  //   style: TextStyle(
+                  //       fontFamily: 'bright', color: Color(0xFF05173D)),
+                  // ),
+                ],
+              ),
+            ),
+          ], //action
+          title: Text(
+            widget.title,
+            style: const TextStyle(
+                fontFamily: 'bright', color: Color(0xFF05173D), fontSize: 24),
+          ),
           backgroundColor: Theme.of(context).primaryColor,
           bottom: const TabBar(tabs: [
             Tab(
@@ -47,22 +101,35 @@ class _MainPageState extends State<MainPage> {
         ),
         body: const TabBarView(
           children: [
-          OpcoesDeReserva(),
-          MinhasReservas(),
-          SobreAChurrascaria(),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
+            OpcoesDeReserva(),
+            MinhasReservas(),
+            SobreAChurrascaria(),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.pushNamed(
               context,
               Routes.fazerReserva, //define your route name
             );
           },
-          label: const Text('Fazer Reserva'),
-          backgroundColor: const Color.fromARGB(255, 4, 64, 216),
-      ), 
-    ),
+          label: const Text(
+            "Fazer Reserva",
+            style: TextStyle(
+              color: Color.fromARGB(255, 255, 255, 255),
+              fontSize: 15,
+              shadows: [
+                Shadow(
+                  blurRadius: 2.0,
+                  color: Color.fromARGB(255, 24, 24, 24),
+                  offset: Offset(1.0, 1.0),
+                ),
+              ],
+            ),
+          ),
+          backgroundColor: const Color(0xFF05173D),
+        ),
+      ),
     );
   }
 }

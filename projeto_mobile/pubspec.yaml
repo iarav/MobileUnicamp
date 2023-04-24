@@ -54,7 +54,13 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-      - lib/assets/whatsapp.svg
+    - lib/assets/whatsapp.svg
+    - 'lib/assets/DU_PAULINHO.png'
+    - 'lib/assets/logo_du_paulinho.png'
+  fonts:
+    - family: bright
+      fonts:
+        - asset: lib/fonts/Bright.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

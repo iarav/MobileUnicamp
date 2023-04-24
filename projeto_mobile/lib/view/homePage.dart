@@ -1,6 +1,5 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/view/loginPage.dart';
 
 import '../model/routes.dart';
 
@@ -14,11 +13,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 1, 29, 62),
+      backgroundColor: Theme.of(context).primaryColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -28,16 +26,13 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(        
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        "Du e Paulinho \nChurrascos",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 40,
-                          color: Colors.white,
-                        ),
+                    children: [
+                      Image.asset(
+                        'lib/assets/DU_PAULINHO.png',
+                        width: 266,
+                        height: 266,
                       ),
                     ],
                   ),
@@ -56,82 +51,111 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget botaoEntrar(){
+  Widget botaoEntrar() {
     return ElevatedButton(
-      onPressed: (){
-        Navigator.pushNamed(
-          context,
-          Routes.login, //define your route name
-        );
-      }, 
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 7, 24, 180)),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-        ),
-        padding: MaterialStateProperty.all<EdgeInsets>(
-          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
-        )
-      ),
-      child: const Text(
-        "Entrar",
-        style: TextStyle(
-          fontSize: 20,
-        ),
-      )
-    );
-  }
-
-  Widget botaoCadastro(){
-    return ElevatedButton(
-      onPressed: (){
-      }, 
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 7, 24, 180)),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-        ),
-        padding: MaterialStateProperty.all<EdgeInsets>(
-          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
-        )
-      ),
-      child: const Text(
-        "Fazer Cadastro",
-        style: TextStyle(
-          fontSize: 20,
-        ),
-      )
-    );
-  }
-
-  Widget botaoSaberMais(){
-    return ElevatedButton(
-      onPressed: (){
-      }, 
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(0, 1, 29, 62)),
-        padding: MaterialStateProperty.all<EdgeInsets>(
-          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 40.0),
-        ),
-        elevation: MaterialStateProperty.all<double>(0),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Icon(Icons.info_outline),
-          SizedBox(width: 15,),
-          Text(
-            "Saiba mais sobre o aplicativo",
-            style: TextStyle(
-              fontSize: 15,
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            Routes.login, //define your route name
+          );
+        },
+        style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(const Color(0xFF05173D)),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
             ),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
+            )),
+        child: const Text(
+          "Entrar",
+          style: TextStyle(
+            fontSize: 15,
+            shadows: [
+              Shadow(
+                blurRadius: 2.0,
+                color: Color.fromARGB(255, 24, 24, 24),
+                offset: Offset(1.0, 1.0),
+              ),
+            ],
           ),
-        ],
-      )
-    );
+        ));
+  }
+
+  Widget botaoCadastro() {
+    return ElevatedButton(
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            Routes.cadastro, //define your route name
+          );
+        },
+        style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(const Color(0xFF05173D)),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
+            )),
+        child: const Text(
+          "Fazer Cadastro",
+          style: TextStyle(
+            fontSize: 15,
+            shadows: [
+              Shadow(
+                blurRadius: 2.0,
+                color: Color.fromARGB(255, 24, 24, 24),
+                offset: Offset(1.0, 1.0),
+              ),
+            ],
+          ),
+        ));
+  }
+
+  Widget botaoSaberMais() {
+    return ElevatedButton(
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            Routes.sobreAplicativo, //define your route name
+          );
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(
+              const Color.fromARGB(0, 1, 29, 62)),
+          padding: MaterialStateProperty.all<EdgeInsets>(
+            const EdgeInsets.symmetric(vertical: 12.0, horizontal: 40.0),
+          ),
+          elevation: MaterialStateProperty.all<double>(0),
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.info_outline),
+            SizedBox(
+              width: 15,
+            ),
+            Text(
+              "Saiba mais sobre o aplicativo",
+              style: TextStyle(
+                fontSize: 15,
+                shadows: [
+                  Shadow(
+                    blurRadius: 2.0,
+                    color: Color.fromARGB(145, 24, 24, 24),
+                    offset: Offset(1.0, 1.0),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 }

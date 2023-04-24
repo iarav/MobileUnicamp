@@ -1,8 +1,8 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/view/selecaoDataOpcoesReserva.dart';
 import '../model/routes.dart';  //import your routes.dart file
 import '../model/complete_data.dart';
+import 'selecaoDataOpcoesReserva.dart';
 
 
 class OpcoesDeReserva extends StatefulWidget {

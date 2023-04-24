@@ -21,22 +21,27 @@ class _LoginPageState extends State<LoginPage> {
     var pessoaCpf = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(
+            widget.title,
+            style: const TextStyle(
+                fontFamily: 'bright', color: Color(0xFF05173D), fontSize: 24),
+          ),
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
-                  "Login:",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
-                ),
+              children: [
+                Text("LOGIN",
+                    style: TextStyle(
+                        fontFamily: 'bright',
+                        color: Color(0xFF05173D),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 50,
+                        ),
+                    ),
               ],
             ),
             Form(
@@ -130,7 +135,10 @@ class _LoginPageState extends State<LoginPage> {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
             if (_pessoaData.cpf == 'admin' && _pessoaData.password == 'admin') {
-              //ADMIN pagina
+              Navigator.pushNamed(
+                context,
+                Routes.admMainPage, //define your route name
+              );
             } else {
               Navigator.pushNamed(
                 context,
@@ -140,8 +148,8 @@ class _LoginPageState extends State<LoginPage> {
           }
         },
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(
-                const Color.fromARGB(255, 7, 24, 180)),
+            backgroundColor:
+                MaterialStateProperty.all<Color>(const Color(0xFF05173D)),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
@@ -153,8 +161,7 @@ class _LoginPageState extends State<LoginPage> {
         child: const Text(
           "Entrar",
           style: TextStyle(
-            fontSize: 15,
-          ),
+              color: Color.fromARGB(255, 255, 255, 255)),
         ));
   }
 }

@@ -1,8 +1,8 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/model/reservaData.dart';
 
 import '../model/complete_data.dart';
+import '../model/reservaData.dart';
 import '../model/routes.dart';
 
 class FazerReserva extends StatefulWidget {
@@ -50,9 +50,9 @@ class _FazerReservaState extends State<FazerReserva> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Text(
                 "Reserva:",
                 style: TextStyle(
