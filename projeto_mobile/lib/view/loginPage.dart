@@ -31,9 +31,9 @@ class _LoginPageState extends State<LoginPage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Text("LOGIN",
                     style: TextStyle(
                         fontFamily: 'bright',

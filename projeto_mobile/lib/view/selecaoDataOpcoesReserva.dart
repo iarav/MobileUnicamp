@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../model/routes.dart';
 
@@ -12,20 +13,8 @@ class SelecaoData extends StatefulWidget {
 
 class _SelecaoDataState extends State<SelecaoData> {
   DateTime? _selectedDate;
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2023),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
+  
+  final TextEditingController _dateController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,28 +33,11 @@ class _SelecaoDataState extends State<SelecaoData> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20,),    
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.0),
-                color: const Color.fromARGB(171, 174, 174, 174),
-              ),
-              child: Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () => _selectDate(context),
-                    child: const Text('Selecionar data'),
-                  ),
-                  Text(
-                    _selectedDate == null
-                        ? 'Nenhuma data selecionada'
-                        : 'Data selecionada: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                    style: const TextStyle( 
-                      fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 5.0),
+              child: SizedBox(
+                width: 210,
+                child: textForm(),
               ),
             ),
             const SizedBox(height: 20,),   
@@ -95,6 +67,8 @@ class _SelecaoDataState extends State<SelecaoData> {
                               children: [
                                 TextButton(
                                   onPressed: () {
+                                    _selectedDate = null;
+                                    _dateController.text = '';
                                     Navigator.pop(context);
                                   },
                                   child: const Text('Cancelar'),
@@ -171,6 +145,47 @@ class _SelecaoDataState extends State<SelecaoData> {
           ],
         ),
       ],
+    );
+  }
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != _selectedDate) {
+      final DateFormat formatter = DateFormat('dd/MM/yyyy');
+      final String formattedDate = formatter.format(picked);
+      setState(() {
+        _selectedDate = picked;
+        _dateController.text =
+            formattedDate; 
+      });
+    }
+  }
+  Widget textForm() {
+    return TextFormField(
+      controller: _dateController,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(50.0),
+        ),
+        hintText: '00/00/0000',
+        hintStyle: TextStyle(
+          color: Colors.grey[400],
+        ),
+      ),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Campo obrigatório.';
+        }
+        return null;
+      },
+      onTap: () {
+        _selectDate(context);
+      },
     );
   }
 }

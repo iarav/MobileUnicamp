@@ -29,43 +29,47 @@ class _CadastroPageState extends State<CadastroPage> {
           ),
           backgroundColor: Theme.of(context).primaryColor,
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Row(
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "CADASTRO",
-                  style: TextStyle(
-                    fontFamily: 'bright',
-                    color: Color(0xFF05173D),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 50,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      "CADASTRO",
+                      style: TextStyle(
+                        fontFamily: 'bright',
+                        color: Color(0xFF05173D),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 50,
+                      ),
+                    ),
+                  ],
+                ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 15),
+                      nomeField(),
+                      const SizedBox(height: 20),
+                      cpfField(),
+                      const SizedBox(height: 20),
+                      passwordField(),
+                      const SizedBox(height: 20),
+                      emailField(),
+                      const SizedBox(height: 20),
+                      telField(),
+                      const SizedBox(height: 13),
+                      botaoEntrar(widget.title),
+                    ],
                   ),
                 ),
               ],
             ),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  const SizedBox(height: 15),
-                  nomeField(),
-                  const SizedBox(height: 20),
-                  cpfField(),
-                  const SizedBox(height: 20),
-                  passwordField(),
-                  const SizedBox(height: 20),
-                  emailField(),
-                  const SizedBox(height: 20),
-                  telField(),
-                  const SizedBox(height: 13),
-                  botaoEntrar(widget.title),
-                ],
-              ),
-            ),
-          ],
+          ),
         ));
   }
 

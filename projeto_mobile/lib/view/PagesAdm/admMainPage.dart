@@ -1,8 +1,8 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
-import 'package:prj_churrascaria_isa/view/PagesAdm/admBloquearData.dart';
-import 'package:prj_churrascaria_isa/view/PagesAdm/admCalendario.dart';
 
+import 'admBloquearData.dart';
+import 'admCalendario.dart';
 import 'admVerReserva.dart';
 
 class AdmMainPage extends StatefulWidget {
@@ -70,7 +70,7 @@ class _AdmMainPageState extends State<AdmMainPage> {
             ),
           ]),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
             AdmVerReserva(),
             AdmBloquearData(),

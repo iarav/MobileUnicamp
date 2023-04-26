@@ -38,12 +38,12 @@ class _SobreAplicativoState extends State<SobreAplicativo> {
               ),
               child: Column(
                 children: [
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.only(top: 10.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
+                      children: const [
                         Icon(Icons.info_outline),
                         SizedBox(width: 15),
                         Text(
@@ -58,7 +58,19 @@ class _SobreAplicativoState extends State<SobreAplicativo> {
                   ),
                   const Expanded(
                     child: Center(
-                      child: Text("Esse aplicativo..."),
+                      child: SizedBox(
+                        width: 300,
+                        child: Text(
+                          "Bem-vindo ao nosso aplicativo Du e Paulinho churrasco!\n"
+                          "Agora está ainda mais fácil para fazer suas reservas de churrasco! Aqui, você pode encontrar a melhor opção para fazer um churrasco com os seus amigos e familiares sem esquentar a cabeça com quem cuida da churrasqueira.\n" 
+                          "Oferecemos quatro combos de serviço, cada um cuidadosamente projetado para atender às suas necessidades: Combo Básico, Combo Silver, Combo Gold e Combo Premium. Com o nosso aplicativo, você pode reservar o seu serviço de churrasco em poucos cliques e deixar todo o trabalho para a nossa equipe altamente qualificada.\n"
+                          "Experimente agora mesmo e torne a sua festa mais especial sem precisar se preocupar com nada além de curtir!",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                              fontSize: 18,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Padding(

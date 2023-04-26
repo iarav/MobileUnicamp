@@ -135,9 +135,9 @@ class _HomePageState extends State<HomePage> {
           ),
           elevation: MaterialStateProperty.all<double>(0),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: const [
             Icon(Icons.info_outline),
             SizedBox(
               width: 15,

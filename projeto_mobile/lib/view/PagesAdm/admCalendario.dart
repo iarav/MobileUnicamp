@@ -17,11 +17,11 @@ class _AdmCalendarioState extends State<AdmCalendario> {
   DateTime? _selectedDay;
   final DadosReserva reservas = DadosReserva();
 
-  List<bool> isCardEnabled = List<bool>.generate(6, (_) => true);
+  List<bool> isCardEnabled = List<bool>.generate(7, (_) => true);
   List<Color> selectedCardColor =
-      List<Color>.generate(6, (_) => const Color.fromARGB(255, 158, 177, 181));
+      List<Color>.generate(7, (_) => const Color.fromARGB(255, 158, 177, 181));
   int selectedCardIndex = -1;
-  List<String> textoBotao = List<String>.generate(6, (_) => "Cancelar Reserva");
+  List<String> textoBotao = List<String>.generate(7, (_) => "Cancelar Reserva");
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +55,7 @@ class _AdmCalendarioState extends State<AdmCalendario> {
           Expanded(
             child: Scrollbar(
               child: ListView.builder(
+                itemCount: 6,
                 itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
                   child: Center(

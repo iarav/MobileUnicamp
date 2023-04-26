@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../model/pessoaData.dart';
+import '../model/routes.dart';
 
 class EditarPerfil extends StatefulWidget {
   const EditarPerfil({super.key, required this.title});
@@ -27,49 +28,54 @@ class _EditarPerfilState extends State<EditarPerfil> {
           ),
           backgroundColor: Theme.of(context).primaryColor,
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Row(
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("EDITAR PERFIL",
-                    style: TextStyle(
-                        fontFamily: 'bright',
-                        color: Color(0xFF05173D),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 50,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("EDITAR PERFIL",
+                        style: TextStyle(
+                            fontFamily: 'bright',
+                            color: Color(0xFF05173D),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 50,
+                            ),
                         ),
-                    ),
-              ],
-            ),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  const SizedBox(height: 15),
-                  nomeField(),
-                  const SizedBox(height: 20),
-                  telField(),
-                  const SizedBox(height: 20),
-                  emailField(),
-                  const SizedBox(height: 20),
-                  passwordField(),
-                  const SizedBox(height: 20),
-                  confirmpasswordField(),
-                  const SizedBox(height: 13),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [                      
-                      botaoCancelar(widget.title),
-                      const SizedBox(width: 5),  
-                      botaoSalvar(widget.title),
+                  ],
+                ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 15),
+                      nomeField(),
+                      const SizedBox(height: 20),
+                      telField(),
+                      const SizedBox(height: 20),
+                      emailField(),
+                      const SizedBox(height: 20),
+                      passwordField(),
+                      const SizedBox(height: 20),
+                      confirmpasswordField(),
+                      const SizedBox(height: 13),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [                      
+                          botaoCancelar(widget.title),
+                          const SizedBox(width: 5),  
+                          botaoSalvar(widget.title),
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ));
   }
 
@@ -320,9 +326,10 @@ class _EditarPerfilState extends State<EditarPerfil> {
   Widget botaoCancelar(String title) {
     return ElevatedButton(
         onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-          }
+          Navigator.pushNamed(
+            context,
+            Routes.mainPage,
+          );
         },
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(

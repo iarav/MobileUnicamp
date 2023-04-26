@@ -21,7 +21,7 @@ class _AdmVerReservaState extends State<AdmVerReserva> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 30, //limite que o index terá. Não irá passar de 30 listTile
+      itemCount: 6, //limite que o index terá. Não irá passar de 30 listTile
       itemBuilder: ((context, index) => Padding(
             padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
             child: Center(

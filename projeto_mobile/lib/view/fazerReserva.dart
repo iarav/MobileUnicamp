@@ -44,15 +44,19 @@ class _FazerReservaState extends State<FazerReserva> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(
+            widget.title,
+            style: const TextStyle(
+                fontFamily: 'bright', color: Color(0xFF05173D), fontSize: 24),
+          ),
           backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: const [
               Text(
                 "Reserva:",
                 style: TextStyle(
@@ -243,7 +247,7 @@ class _FazerReservaState extends State<FazerReserva> {
         }
       }, 
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 7, 24, 180)),
+        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF05173D)),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
