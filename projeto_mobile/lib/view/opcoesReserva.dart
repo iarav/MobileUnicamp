@@ -21,19 +21,6 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
 
   final CompleteModel completeModel = CompleteModel();
 
-  // Future<Box> _openBox() async {
-  //   return await Hive.openBox('radio_values');
-  // }
-  
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _openBox().then((_) {
-  //     _radioValues = Hive.box("radio_values");
-  //     print("feito");
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -55,8 +42,6 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
   }
 
   Widget radioOpcoes(int value, String textRadio){
-    print("aqui"); 
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

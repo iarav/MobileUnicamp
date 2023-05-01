@@ -6,12 +6,4 @@ class PessoaData{
   String tel = "";
   String password = "";
   String confirmacaoPassword = "";
-
-
-  doSomething(){
-    // ignore: avoid_print
-    print("Username: $cpf");
-    // ignore: avoid_print
-    print("Password: $password");
-  }
 }

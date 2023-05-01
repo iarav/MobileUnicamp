@@ -36,7 +36,11 @@ class _MainPageState extends State<MainPage> {
                       color: Color(0xFF05173D),
                     ),
                     onPressed: () {
-                      Navigator.popUntil(context, (route) => route.isFirst);
+                      SavePath.changePath(Routes.home);
+                      Navigator.pushNamed(
+                        context,
+                        Routes.home, //define your route name
+                      );
                     },
                   ),
                   // const Text(
