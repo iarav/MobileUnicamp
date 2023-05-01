@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../model/routes.dart';
+import '../model/save_path.dart';
 
 class SelecaoData extends StatefulWidget {
   const SelecaoData({super.key});
@@ -75,6 +76,7 @@ class _SelecaoDataState extends State<SelecaoData> {
                                 ),
                                 TextButton(
                                   onPressed: () {
+                                    SavePath.changePath(Routes.fazerReserva);
                                     Navigator.pushNamed(
                                       context,
                                       Routes.fazerReserva, //define your route name

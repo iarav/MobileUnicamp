@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../model/complete_data.dart';
 import '../model/reservaData.dart';
 import '../model/routes.dart';
+import '../model/save_path.dart';
 
 class FazerReserva extends StatefulWidget {
   const FazerReserva({super.key, required this.title});
@@ -287,6 +288,7 @@ class _FazerReservaState extends State<FazerReserva> {
               onPressed: () {
                 Navigator.pop(context);
                 if(texto == 'A reserva foi efetuada com sucesso!'){
+                  SavePath.changePath(Routes.mainPage);
                   Navigator.pushNamed(
                     context,
                     Routes.mainPage, //define your route name

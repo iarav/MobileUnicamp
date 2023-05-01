@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../model/pessoaData.dart';
 import '../model/routes.dart';
+import '../model/save_path.dart';
 
 class EditarPerfil extends StatefulWidget {
   const EditarPerfil({super.key, required this.title});
@@ -326,6 +327,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
   Widget botaoCancelar(String title) {
     return ElevatedButton(
         onPressed: () {
+          SavePath.changePath(Routes.mainPage);
           Navigator.pushNamed(
             context,
             Routes.mainPage,

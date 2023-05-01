@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../model/routes.dart';  //import your routes.dart file
 import '../model/complete_data.dart';
+import '../model/save_path.dart';
 import 'selecaoDataOpcoesReserva.dart';
 
 
@@ -122,6 +123,7 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
               textAlign: TextAlign.center,
             ),
             onTap: () {
+              SavePath.changePath(Routes.fazerReserva);
               Navigator.pushNamed(
                 context,
                 Routes.fazerReserva, //define your route name

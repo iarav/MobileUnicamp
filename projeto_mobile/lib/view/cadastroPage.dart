@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../model/pessoaData.dart';
 import '../../model/routes.dart';
+import '../model/save_path.dart';
 //import '../model/routes.dart';
 
 class CadastroPage extends StatefulWidget {
@@ -249,6 +250,7 @@ class _CadastroPageState extends State<CadastroPage> {
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
+            SavePath.changePath(Routes.login);
             Navigator.pushNamed(
               context,
               Routes.login,

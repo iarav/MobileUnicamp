@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../model/routes.dart';
+import '../model/save_path.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -54,6 +55,7 @@ class _HomePageState extends State<HomePage> {
   Widget botaoEntrar() {
     return ElevatedButton(
         onPressed: () {
+          SavePath.changePath(Routes.login);
           Navigator.pushNamed(
             context,
             Routes.login, //define your route name
@@ -88,6 +90,7 @@ class _HomePageState extends State<HomePage> {
   Widget botaoCadastro() {
     return ElevatedButton(
         onPressed: () {
+          SavePath.changePath(Routes.cadastro);
           Navigator.pushNamed(
             context,
             Routes.cadastro, //define your route name
@@ -122,6 +125,7 @@ class _HomePageState extends State<HomePage> {
   Widget botaoSaberMais() {
     return ElevatedButton(
         onPressed: () {
+          SavePath.changePath(Routes.sobreAplicativo);
           Navigator.pushNamed(
             context,
             Routes.sobreAplicativo, //define your route name

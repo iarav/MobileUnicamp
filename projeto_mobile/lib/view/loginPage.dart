@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import '../model/pessoaData.dart';
 import '../model/routes.dart';
+import '../model/save_path.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -135,11 +136,13 @@ class _LoginPageState extends State<LoginPage> {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
             if (_pessoaData.cpf == 'admin' && _pessoaData.password == 'admin') {
+              SavePath.changePath(Routes.admMainPage);
               Navigator.pushNamed(
                 context,
                 Routes.admMainPage, //define your route name
               );
             } else {
+              SavePath.changePath(Routes.mainPage);
               Navigator.pushNamed(
                 context,
                 Routes.mainPage, //define your route name
