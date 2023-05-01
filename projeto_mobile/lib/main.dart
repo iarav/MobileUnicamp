@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
+import 'configs/hive_configs.dart';
 import 'model/routes.dart';
 import 'view/homePage.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveConfig.start();
+  await Hive.openBox('radio_values');
   runApp(const MyApp());
 }
 

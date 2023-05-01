@@ -1,5 +1,6 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import '../model/routes.dart';  //import your routes.dart file
 import '../model/complete_data.dart';
 import 'selecaoDataOpcoesReserva.dart';
@@ -15,9 +16,23 @@ class OpcoesDeReserva extends StatefulWidget {
 class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
   final List<String> items = ['Combo Básico', 'Combo Silver', 'Combo Gold', 'Combo Premium'];
   final List<String> description = ['Somente Churrasco', 'Churrasco + Arroz + Salada', 'Churrasco + Arroz + Salada + Maionese', 'Churrasco + Arroz + Salada + Maionese + Acompanhamento personalizado'];
-  
+  final Box _radioValues = Hive.box("radio_values");
+
   final CompleteModel completeModel = CompleteModel();
+
+  // Future<Box> _openBox() async {
+  //   return await Hive.openBox('radio_values');
+  // }
   
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _openBox().then((_) {
+  //     _radioValues = Hive.box("radio_values");
+  //     print("feito");
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -28,8 +43,8 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            myRadio(1, 'Opções de \nChurrasco'),
-            myRadio(2, 'Ver disponibilidade \nde datas'),
+            radioOpcoes(1, 'Opções de \nChurrasco'),
+            radioOpcoes(2, 'Ver disponibilidade \nde datas'),
           ],
         ),
         const SizedBox(height: 20,),
@@ -38,16 +53,21 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
     );
   }
 
-  Widget myRadio(int value, String textRadio){
+  Widget radioOpcoes(int value, String textRadio){
+    print("aqui"); 
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Radio(
           value: value, 
-          groupValue: completeModel.radioValue,
-          onChanged: (int? groupValue){ //Esse value se refere ao group value
+          groupValue: _radioValues.get('radioOpcao') ?? 1, // completeModel.radioValue,
+          onChanged: (dynamic groupValue){ //Esse value se refere ao group value
+            // setState(() {
+            //   completeModel.radioValue = groupValue ?? 1;
+            // });
             setState(() {
-              completeModel.radioValue = groupValue ?? 1;
+              _radioValues.put('radioOpcao', groupValue ?? 1);
             });
           }),
         Text(
@@ -62,7 +82,8 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
   }
 
    Widget _buildWidget() {
-    switch (completeModel.radioValue) {
+    // switch (completeModel.radioValue) {
+    switch (_radioValues.get('radioOpcao') ?? 1) {
       case 1:
         return Container(child: myList());
       case 2:
