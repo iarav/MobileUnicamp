@@ -11,6 +11,7 @@ void main() async{
   String lastRoute = prefs.getString('last_route') ?? '/';
   await HiveConfig.start();
   await Hive.openBox('radio_values');
+  await Hive.openBox('reservas_canceladas');
   runApp(MyApp(lastRoute: lastRoute));
   // runApp(const MyApp());
 }
