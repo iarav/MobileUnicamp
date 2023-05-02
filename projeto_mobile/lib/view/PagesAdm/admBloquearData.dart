@@ -1,5 +1,6 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../model/dadosReserva.dart';
 
@@ -12,9 +13,41 @@ class AdmBloquearData extends StatefulWidget {
 
 class _AdmBloquearDataState extends State<AdmBloquearData> {
   final _formKey = GlobalKey<FormState>();
-  final DadosReserva reservas = DadosReserva();
   final TextEditingController _dateController = TextEditingController();
   DateTime? _selectedDate;
+
+  final _boxReservasCanceladas = Hive.box('reservas_canceladas');
+  List<dynamic> _items = [];
+
+  void _refreshListView(){
+     setState(() {
+        _items = _boxReservasCanceladas.values.toList();
+     });
+  }
+
+  void createInicialData() async{
+    dynamic itemsInicial = ['24/02/2023', '02/05/2023', '04/02/2023'];
+    await _boxReservasCanceladas.addAll(itemsInicial);
+  }
+
+  @override
+  void initState(){
+    //se não tiver nenhum dado dentro da lista, ou seja, primeira vez abrindo o app
+      if (_boxReservasCanceladas.get(_items) == null) {
+        // ignore: avoid_print
+        print("ainda não há items");
+        createInicialData();
+      }
+    _refreshListView();
+    super.initState();
+  }
+
+  Future<void> _createCard(dynamic newItem) async{
+    await _boxReservasCanceladas.add(newItem);
+    _refreshListView();
+    // ignore: avoid_print
+    print("***Quantidade de reservas canceladas: ${_boxReservasCanceladas.length}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +93,11 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
               child: ListView.builder(
-                itemCount: reservas.data.length,
+                itemCount: _items.length,
                 itemBuilder: (context, index) => Card(
                   color: const Color.fromARGB(90, 180, 0, 0),
                   child: ListTile(
-                    title: Text(reservas.data[index]),
+                    title: Text(_items[index]),
                     trailing: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
@@ -110,7 +143,12 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
 
   Widget botaoBloquear() {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () async{
+        if (_formKey.currentState!.validate()) {
+            _formKey.currentState!.save();
+            _createCard(_dateController.text);
+        }
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromARGB(230, 196, 0, 33),
         shape: RoundedRectangleBorder(
