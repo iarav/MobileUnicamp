@@ -1,6 +1,8 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
 
+import '../../model/routes.dart';
+import '../../model/save_path.dart';
 import 'admBloquearData.dart';
 import 'admCalendario.dart';
 import 'admVerReserva.dart';
@@ -37,7 +39,11 @@ class _AdmMainPageState extends State<AdmMainPage> {
                     color: Color(0xFF05173D),
                   ),
                   onPressed: () {
-                    Navigator.popUntil(context, (route) => route.isFirst);
+                    SavePath.changePath(Routes.home);
+                    Navigator.pushNamed(
+                      context,
+                      Routes.home, //define your route name
+                    );
                   },
                 ),
                 // const Text(

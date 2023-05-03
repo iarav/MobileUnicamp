@@ -25,18 +25,22 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
      });
   }
 
+  bool entreiInicial = false;
   void createInicialData() async{
     dynamic itemsInicial = ['24/02/2023', '02/05/2023', '04/02/2023'];
-    await _boxReservasCanceladas.addAll(itemsInicial);
+    await _boxReservasCanceladas.addAll(itemsInicial);   
+    entreiInicial = true;
   }
 
   @override
   void initState(){
     //se não tiver nenhum dado dentro da lista, ou seja, primeira vez abrindo o app
-      if (_boxReservasCanceladas.get(_items) == null) {
+      if (_boxReservasCanceladas.isEmpty) {
         // ignore: avoid_print
         print("ainda não há items");
-        createInicialData();
+        if(!entreiInicial){
+          createInicialData();
+        }
       }
     _refreshListView();
     super.initState();
@@ -93,13 +97,17 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
               child: ListView.builder(
-                itemCount: _items.length,
+                itemCount: (_items.length),
                 itemBuilder: (context, index) => Card(
                   color: const Color.fromARGB(90, 180, 0, 0),
                   child: ListTile(
                     title: Text(_items[index]),
                     trailing: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                          await _boxReservasCanceladas.deleteAt(index);
+                          _refreshListView();
+                        print("cliquei $index}");
+                      },
                       style: ElevatedButton.styleFrom(
                         elevation: 5,
                         backgroundColor: const Color.fromARGB(190, 214, 100, 100),

@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import '../model/pessoaData.dart';
 import '../model/routes.dart';
 import '../model/save_path.dart';
@@ -15,7 +16,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final PessoaData _pessoaData = PessoaData();
+  //final PessoaData _pessoaData = PessoaData();
+  final Box _textformValues = Hive.box("textform_values");
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 35),
-                  cpfField(pessoaCpf),
+                  cpfField(),
                   const SizedBox(height: 25),
                   passwordField(),
                   const SizedBox(height: 25),
@@ -62,11 +64,11 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget cpfField(cpf) {
+  Widget cpfField() {
     return SizedBox(
       width: 250,
       child: TextFormField(
-        initialValue: cpf ?? "",
+        initialValue: _textformValues.get('cpf'),
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: 'CPF',
@@ -90,7 +92,8 @@ class _LoginPageState extends State<LoginPage> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaData.cpf = value ?? "";
+          // _pessoaData.cpf = value ?? "";
+           _textformValues.put('cpf', value);
         },
       ),
     );
@@ -100,6 +103,7 @@ class _LoginPageState extends State<LoginPage> {
     return SizedBox(
       width: 250,
       child: TextFormField(
+        initialValue: _textformValues.get('password'),
         obscureText: true,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
@@ -124,7 +128,8 @@ class _LoginPageState extends State<LoginPage> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaData.password = value ?? "";
+          // _pessoaData.password = value ?? "";
+           _textformValues.put('password', value);
         },
       ),
     );
@@ -135,7 +140,10 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
-            if (_pessoaData.cpf == 'admin' && _pessoaData.password == 'admin') {
+            String cpf = _textformValues.get('cpf');
+            String password = _textformValues.get('password');
+            // if (_pessoaData.cpf == 'admin' && _pessoaData.password == 'admin') {
+              if (cpf == 'admin' && password == 'admin') {
               SavePath.changePath(Routes.admMainPage);
               Navigator.pushNamed(
                 context,
