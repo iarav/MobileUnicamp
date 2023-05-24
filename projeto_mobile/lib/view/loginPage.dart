@@ -1,7 +1,6 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import '../model/pessoaData.dart';
 import '../model/routes.dart';
 import '../model/save_path.dart';
 
@@ -21,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    var pessoaCpf = ModalRoute.of(context)!.settings.arguments;
+    // var pessoaCpf = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
         appBar: AppBar(
           title: Text(

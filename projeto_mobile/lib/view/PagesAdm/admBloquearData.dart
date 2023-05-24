@@ -1,8 +1,15 @@
 // ignore: file_names
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
-import '../../model/dadosReserva.dart';
+
+import '../../bloc/dataBloqueada_bloc.dart';
+import '../../bloc/dataBloqueada_event.dart';
+import '../../bloc/dataBloqueada_state.dart';
+import '../../model/datasBloqueadas.dart';
 
 class AdmBloquearData extends StatefulWidget {
   const AdmBloquearData({super.key});
@@ -15,42 +22,132 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _dateController = TextEditingController();
   DateTime? _selectedDate;
+  final DataBloqueada data = DataBloqueada("");
+  StreamSubscription<DataBloqueadaState>? _blocSubscription;
 
   final _boxReservasCanceladas = Hive.box('reservas_canceladas');
-  List<dynamic> _items = [];
+  List<Map<String, dynamic>> _items = [];
 
-  void _refreshListView(){
-     setState(() {
-        _items = _boxReservasCanceladas.values.toList();
-     });
+  void _refreshListView() {
+    setState(() {
+      _items = _boxReservasCanceladas.values
+          .map<Map<String, dynamic>>((dynamic item) => {
+                'id': item['id'],
+                'data': item['data'],
+              })
+          .toList();
+    });
+    print("Os valores da boxReservas são:${_boxReservasCanceladas.values}");
+    print("Os valores da list são:${_items}");
   }
 
-  bool entreiInicial = false;
-  void createInicialData() async{
-    dynamic itemsInicial = ['24/02/2023', '02/05/2023', '04/02/2023'];
-    await _boxReservasCanceladas.addAll(itemsInicial);   
-    entreiInicial = true;
+  void reloadData() async {
+    //limpa os dados da box
+    _boxReservasCanceladas.clear();
+
+    // Crie uma instância do DataBloqueadaBloc
+    final bloc = DataBloqueadaBloc(context);
+
+    // Emita um evento para buscar todos os dados bloqueados
+    bloc.add(GetAllDataBloqueadaEvent());
+
+    // Escute o estado do bloco
+    bloc.stream.listen((state) async {
+      if (state is LoadedState) {
+        // Atualize a lista _items com os dados do estado LoadedState
+        List<Map<String, dynamic>> itemsInicial = [];
+        for (var value in state.dataBloqueada.values) {
+          if (value is Map<String, dynamic>) {
+            itemsInicial.add({
+              'id': value['id'],
+              'data': value['data'],
+            });
+          }
+        }
+        await _boxReservasCanceladas.addAll(itemsInicial);
+        _refreshListView();
+      }
+    });
   }
 
   @override
-  void initState(){
-    //se não tiver nenhum dado dentro da lista, ou seja, primeira vez abrindo o app
-      if (_boxReservasCanceladas.isEmpty) {
-        // ignore: avoid_print
-        print("ainda não há items");
-        if(!entreiInicial){
-          createInicialData();
-        }
-      }
+  void initState() {
+    _boxReservasCanceladas.clear();
+    reloadData();
     _refreshListView();
     super.initState();
   }
 
-  Future<void> _createCard(dynamic newItem) async{
-    await _boxReservasCanceladas.add(newItem);
+  Future<void> _addListBox(dynamic data, dynamic id) async {
+    await _boxReservasCanceladas.add({
+      'id': id,
+      'data': data,
+    });
     _refreshListView();
-    // ignore: avoid_print
-    print("***Quantidade de reservas canceladas: ${_boxReservasCanceladas.length}");
+  }
+
+  Widget _blocBuilder(dynamic index) {
+    return BlocBuilder<DataBloqueadaBloc, DataBloqueadaState>(
+        builder: (context, state) {
+      if (state is LoadedState || state is InicialState) {
+        return Card(
+          color: const Color.fromARGB(90, 180, 0, 0),
+          child: ListTile(
+            title: Text(_items[index]['data'] ?? '01/01/2000'),
+            trailing: ElevatedButton(
+              onPressed: () async {
+                final bloc = context.read<DataBloqueadaBloc>();
+                final dataId = index < _items.length ? _items[index]['id'] : '';
+                bloc.add(DeleteDataBloqueadaEvent(dataId));
+
+                await _boxReservasCanceladas.deleteAt(index);
+                _refreshListView();
+                //BlocProvider.of<DataBloqueadaBloc>(context).add(DeleteDataBloqueadaEvent("${_items[index]['id']}"));
+              },
+              style: ElevatedButton.styleFrom(
+                elevation: 5,
+                backgroundColor: const Color.fromARGB(190, 214, 100, 100),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Text(
+                'Desbloquear',
+                style: TextStyle(color: Color.fromARGB(255, 92, 0, 12)),
+              ),
+            ),
+          ),
+        );
+      } else if (state is ErrorState) {
+        return Card(
+          child: ListTile(
+            title: Text(state.message),
+            trailing: ElevatedButton(
+              onPressed: () async {
+                BlocProvider.of<DataBloqueadaBloc>(context)
+                    .add(GetAllDataBloqueadaEvent());
+                _refreshListView();
+              },
+              style: ElevatedButton.styleFrom(
+                elevation: 5,
+                backgroundColor: const Color.fromARGB(189, 255, 255, 255),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Text(
+                'Tentar novamente',
+                style: TextStyle(color: Color.fromARGB(190, 214, 100, 100)),
+              ),
+            ),
+          ),
+        );
+      } else {
+        return const Center(
+          child: Text('Estado inválido'),
+        );
+      }
+    });
   }
 
   @override
@@ -94,36 +191,22 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
           ),
           //O expanded diz que o listView ocupará todo o resto da tela, ele é necessário
           Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.75,
-              child: ListView.builder(
-                itemCount: (_items.length),
-                itemBuilder: (context, index) => Card(
-                  color: const Color.fromARGB(90, 180, 0, 0),
-                  child: ListTile(
-                    title: Text(_items[index]),
-                    trailing: ElevatedButton(
-                      onPressed: () async {
-                          await _boxReservasCanceladas.deleteAt(index);
-                          _refreshListView();
-                        print("cliquei $index}");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 5,
-                        backgroundColor: const Color.fromARGB(190, 214, 100, 100),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      child: const Text(
-                        'Desbloquear',
-                        style: TextStyle(color: Color.fromARGB(255, 92, 0, 12)),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            child: _items.isNotEmpty
+                ? BlocBuilder<DataBloqueadaBloc, DataBloqueadaState>(
+                    builder: (context, state) {
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      child: (state is LoadingState)
+                          ? const Center(child: CircularProgressIndicator())
+                          : ListView.builder(
+                              itemCount: (_items.length),
+                              itemBuilder: (context, index) {
+                                return _blocBuilder(index);
+                              },
+                            ),
+                    );
+                  })
+                : const Text('Nenhum dado disponível.'),
           ),
         ],
       ),
@@ -151,10 +234,23 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
 
   Widget botaoBloquear() {
     return ElevatedButton(
-      onPressed: () async{
+      onPressed: () async {
         if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-            _createCard(_dateController.text);
+          _formKey.currentState!.save();
+
+          data.setData(_dateController.text);
+          final bloc = context.read<DataBloqueadaBloc>();
+
+          // Cancelar o StreamSubscription anterior, se existir
+          _blocSubscription?.cancel();
+
+          bloc.add(InsertDataBloqueadaEvent(data));
+          _blocSubscription = bloc.stream.listen((state) async {
+            if (state is LoadedState) {
+              print("O ID DO CARD ADICIONADO É: ${state.dataBloqueada['id']}");
+              reloadData();
+            }
+          });
         }
       },
       style: ElevatedButton.styleFrom(
@@ -174,7 +270,8 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
     return TextFormField(
       controller: _dateController,
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(50.0),
         ),
