@@ -8,13 +8,12 @@ import 'bloc/dataBloqueada_bloc.dart';
 import 'configs/hive_configs.dart';
 import 'model/routes.dart';
 
-iniciarFireBase() async{
+iniciarFireBase() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 }
 
-void main() async{
-  //iniciando FireBase no projeto
+void main() async {
   iniciarFireBase();
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,9 +24,7 @@ void main() async{
   await Hive.openBox('textform_values');
   await Hive.openBox('reservas_canceladas');
   runApp(MyApp(lastRoute: lastRoute));
-  // runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   final String lastRoute;
@@ -43,7 +40,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: const Color.fromARGB(255, 209, 150, 92),
         ),
-        routes: Routes.getRoutes(), 
+        routes: Routes.getRoutes(),
       ),
     );
   }

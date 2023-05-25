@@ -1,11 +1,9 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import '../model/routes.dart';  //import your routes.dart file
+import '../model/routes.dart'; //import your routes.dart file
 import '../model/complete_data.dart';
-import '../model/save_path.dart';
 import 'selecaoDataOpcoesReserva.dart';
-
 
 class OpcoesDeReserva extends StatefulWidget {
   const OpcoesDeReserva({super.key});
@@ -15,8 +13,18 @@ class OpcoesDeReserva extends StatefulWidget {
 }
 
 class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
-  final List<String> items = ['Combo Básico', 'Combo Silver', 'Combo Gold', 'Combo Premium'];
-  final List<String> description = ['Somente Churrasco', 'Churrasco + Arroz + Salada', 'Churrasco + Arroz + Salada + Maionese', 'Churrasco + Arroz + Salada + Maionese + Acompanhamento personalizado'];
+  final List<String> items = [
+    'Combo Básico',
+    'Combo Silver',
+    'Combo Gold',
+    'Combo Premium'
+  ];
+  final List<String> description = [
+    'Somente Churrasco',
+    'Churrasco + Arroz + Salada',
+    'Churrasco + Arroz + Salada + Maionese',
+    'Churrasco + Arroz + Salada + Maionese + Acompanhamento personalizado'
+  ];
   final Box _radioValues = Hive.box("radio_values");
 
   final CompleteModel completeModel = CompleteModel();
@@ -27,7 +35,9 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -35,30 +45,34 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
             radioOpcoes(2, 'Ver disponibilidade \nde datas'),
           ],
         ),
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         Expanded(child: _buildWidget()),
       ],
     );
   }
 
-  Widget radioOpcoes(int value, String textRadio){
+  Widget radioOpcoes(int value, String textRadio) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Radio(
-          value: value, 
-          groupValue: _radioValues.get('radioOpcao') ?? 1, // completeModel.radioValue,
-          onChanged: (dynamic groupValue){ //Esse value se refere ao group value
-            // setState(() {
-            //   completeModel.radioValue = groupValue ?? 1;
-            // });
-            setState(() {
-              _radioValues.put('radioOpcao', groupValue ?? 1);
-            });
-          }),
+            value: value,
+            groupValue: _radioValues.get('radioOpcao') ??
+                1, // completeModel.radioValue,
+            onChanged: (dynamic groupValue) {
+              //Esse value se refere ao group value
+              // setState(() {
+              //   completeModel.radioValue = groupValue ?? 1;
+              // });
+              setState(() {
+                _radioValues.put('radioOpcao', groupValue ?? 1);
+              });
+            }),
         Text(
           textRadio,
-          style: const TextStyle( 
+          style: const TextStyle(
             fontSize: 15,
           ),
           textAlign: TextAlign.center,
@@ -67,7 +81,7 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
     );
   }
 
-   Widget _buildWidget() {
+  Widget _buildWidget() {
     // switch (completeModel.radioValue) {
     switch (_radioValues.get('radioOpcao') ?? 1) {
       case 1:
@@ -79,7 +93,7 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
     }
   }
 
-  Widget myList(){
+  Widget myList() {
     return ListView.separated(
       padding: const EdgeInsets.all(15),
       itemCount: items.length,
@@ -93,7 +107,7 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
           child: ListTile(
             title: Text(
               items[index],
-              style: const TextStyle( 
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 25,
               ),
@@ -108,7 +122,6 @@ class _OpcoesDeReservaState extends State<OpcoesDeReserva> {
               textAlign: TextAlign.center,
             ),
             onTap: () {
-              SavePath.changePath(Routes.fazerReserva);
               Navigator.pushNamed(
                 context,
                 Routes.fazerReserva, //define your route name

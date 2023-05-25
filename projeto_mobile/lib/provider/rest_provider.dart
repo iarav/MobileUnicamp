@@ -14,115 +14,78 @@ class RestDataProvider {
       "https://churrascaria-mobile-default-rtdb.firebaseio.com/datasBloqueadas";
 
   Future<Map<String, dynamic>> getAllDataBloqueada() async {
-    final response = await http.get(Uri.parse('$baseUrl.json'));
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to retrieve data from Firebase');
+    try {
+      final response = await http.get(Uri.parse('$baseUrl.json'));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        return {'error': 'Failed to retrieve data'};
+      }
+    } catch (e) {
+      print("ERRO: getAllDataBloqueada -> $e");
+      return {'error': 'Failed to retrieve data'};
     }
   }
 
   Future<Map<String, dynamic>> getDataBloqueada(dynamic id) async {
-    final response = await http.get(Uri.parse('$baseUrl/$id.json'));
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/$id.json'));
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to retrieve data from Firebase');
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        print('Failed to retrieve data from Firebase');
+        return {'error': 'Failed to retrieve data'};
+      }
+    } catch (e) {
+      print("ERRO: getDataBloqueada -> $e");
+      return {'error': 'Failed to retrieve data'};
     }
   }
 
   Future<String> insertDataBloqueada(DataBloqueada dataBloqueada) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl.json'),
-    body: jsonEncode(dataBloqueada.toMap()),
-  );
+    final response = await http.post(
+      Uri.parse('$baseUrl.json'),
+      body: jsonEncode(dataBloqueada.toMap()),
+    );
 
-  if (response.statusCode == 200) {
-    final responseData = jsonDecode(response.body);
-    final novaChave = responseData['name'];
-    //adiciona o HASH gerado pelo Firebase como id do objeto, é preciso dar um update para atualizar o id
-    dataBloqueada.setId(novaChave);
-    
-    // Crie uma completer para sinalizar a conclusão do Future após a atualização do ID
-    final completer = Completer<String>();
-    
-    // Chame a função de atualização e aguarde a conclusão antes de retornar o novo ID
-    updateDataBloqueada(dataBloqueada, dataBloqueada).then((_) {
-      completer.complete(novaChave);
-    }).catchError((error) {
-      completer.completeError(error);
-    });
-    
-    return completer.future;
-  } else {
-    throw Exception('Failed to post data to Firebase');
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      final novaChave = responseData['name'];
+      //adiciona o HASH gerado pelo Firebase como id do objeto, é preciso dar um update para atualizar o id
+      dataBloqueada.setId(novaChave);
+
+      final completer = Completer<String>();
+
+      updateDataBloqueada(dataBloqueada.id, dataBloqueada).then((_) {
+        completer.complete(novaChave);
+      }).catchError((error) {
+        completer.completeError(error);
+      });
+
+      return completer.future;
+    } else {
+      throw Exception('Failed to post data to Firebase');
+    }
   }
-}
 
-
-  Future<void> updateDataBloqueada(DataBloqueada antigaDataBloqueada,
-      DataBloqueada novaDataBloqueada) async {
+  Future<void> updateDataBloqueada(String id, DataBloqueada data) async {
     final response = await http.patch(
-      Uri.parse('$baseUrl/${antigaDataBloqueada.id}.json'),
-      body: jsonEncode(novaDataBloqueada.toMap()),
+      Uri.parse('$baseUrl/$id.json'),
+      body: jsonEncode(data.toMap()),
     );
 
     if (response.statusCode != 200) {
+      print("ERRO -> update data bloqueada");
       throw Exception('Failed to update data in Firebase');
     }
   }
 
   Future<void> deleteDataBloqueada(dynamic id) async {
-    final response =
-        await http.delete(Uri.parse('$baseUrl/$id.json'));
+    final response = await http.delete(Uri.parse('$baseUrl/$id.json'));
 
     if (response.statusCode != 200) {
       throw Exception('Failed to delete data from Firebase from rest');
     }
   }
 }
-
-//   // insertReserva(Reserva reserva) async {
-//   //   _dio.post(
-//   //     prefixUrl + suffixUrl,
-//   //     data: reserva.toMap(),
-//   //   );
-//   // }
-
-//   // updateReserva(String reservaId, Reserva reserva) async {
-//   //   _dio.put(
-//   //     prefixUrl + reservaId + suffixUrl,
-//   //     data: reserva.toMap(),
-//   //   );
-//   // }
-
-//   // deleteNote(String reservaId) async {
-//   //   _dio.delete(
-//   //     prefixUrl + reservaId + suffixUrl,
-//   //   );
-//   // }
-
-
-
-
-
-// //Exemplo de chamar as classes
-// final firebaseApi = FirebaseRestAPI('https://seu-projeto.firebaseio.com');
-  
-// // Obter dados
-// final Reserva reserva = Reserva('Maria', '123', '00/00/0000', '100', 'normal', '300');
-// dynamic result = await restProvider.insertReserva(reserva);
-// print(result);
-
-// // Enviar dados
-// final newData = {'name': 'John', 'age': 25};
-// await firebaseApi.postData('caminho-do-nodo.json', newData);
-
-// // Atualizar dados
-// final updatedData = {'name': 'John Doe', 'age': 26};
-// await firebaseApi.updateData('caminho-do-nodo.json', updatedData);
-
-// // Deletar dados
-// await firebaseApi.deleteData('caminho-do-nodo.json');

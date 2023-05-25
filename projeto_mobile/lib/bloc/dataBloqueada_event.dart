@@ -10,9 +10,9 @@ class InsertDataBloqueadaEvent extends DataBloqueadaEvent {
 }
 
 class UpdateDataBloqueadaEvent extends DataBloqueadaEvent {
-  final DataBloqueada antigaData;
-  final DataBloqueada novaData;
-  UpdateDataBloqueadaEvent(this.antigaData, this.novaData);
+  final String idAntigaDataBloqueada;
+  final DataBloqueada novaDataBloqueada;
+  UpdateDataBloqueadaEvent(this.idAntigaDataBloqueada, this.novaDataBloqueada);
 }
 
 class DeleteDataBloqueadaEvent extends DataBloqueadaEvent {

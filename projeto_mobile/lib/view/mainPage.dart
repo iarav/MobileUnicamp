@@ -62,7 +62,6 @@ class _MainPageState extends State<MainPage> {
                       color: Color(0xFF05173D),
                     ),
                     onPressed: () {
-                      SavePath.changePath(Routes.editarPerfil);
                       Navigator.pushNamed(
                         context,
                         Routes.editarPerfil, //define your route name
@@ -114,7 +113,6 @@ class _MainPageState extends State<MainPage> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            SavePath.changePath(Routes.fazerReserva);
             Navigator.pushNamed(
               context,
               Routes.fazerReserva, //define your route name

@@ -37,18 +37,15 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
               })
           .toList();
     });
-    print("Os valores da boxReservas são:${_boxReservasCanceladas.values}");
-    print("Os valores da list são:${_items}");
+    //print("Os valores da boxReservas são:${_boxReservasCanceladas.values}");
+    //print("Os valores da list são:${_items}");
   }
 
   void reloadData() async {
-    //limpa os dados da box
     _boxReservasCanceladas.clear();
 
-    // Crie uma instância do DataBloqueadaBloc
     final bloc = DataBloqueadaBloc(context);
 
-    // Emita um evento para buscar todos os dados bloqueados
     bloc.add(GetAllDataBloqueadaEvent());
 
     // Escute o estado do bloco
@@ -98,11 +95,11 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
               onPressed: () async {
                 final bloc = context.read<DataBloqueadaBloc>();
                 final dataId = index < _items.length ? _items[index]['id'] : '';
+
                 bloc.add(DeleteDataBloqueadaEvent(dataId));
 
                 await _boxReservasCanceladas.deleteAt(index);
                 _refreshListView();
-                //BlocProvider.of<DataBloqueadaBloc>(context).add(DeleteDataBloqueadaEvent("${_items[index]['id']}"));
               },
               style: ElevatedButton.styleFrom(
                 elevation: 5,
@@ -167,7 +164,7 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
           ),
           const Text(
             "Obs: datas bloqueadas impedem os usuários de reservar nesse dia",
-            style: TextStyle(fontSize: 13),
+            style: TextStyle(fontSize: 11),
             textAlign: TextAlign.center,
           ),
           Form(
@@ -196,7 +193,8 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
                     builder: (context, state) {
                     return SizedBox(
                       width: MediaQuery.of(context).size.width * 0.75,
-                      child: (state is LoadingState)
+                      child: ((state is LoadingState) ||
+                              (state is InicialState && _items.isEmpty))
                           ? const Center(child: CircularProgressIndicator())
                           : ListView.builder(
                               itemCount: (_items.length),
@@ -225,9 +223,7 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
       final String formattedDate = formatter.format(picked);
       setState(() {
         _selectedDate = picked;
-        // _dateController.text = picked.toString();
-        _dateController.text =
-            formattedDate; // Define o valor do campo de texto
+        _dateController.text = formattedDate;
       });
     }
   }
@@ -245,12 +241,27 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
           _blocSubscription?.cancel();
 
           bloc.add(InsertDataBloqueadaEvent(data));
-          _blocSubscription = bloc.stream.listen((state) async {
-            if (state is LoadedState) {
-              print("O ID DO CARD ADICIONADO É: ${state.dataBloqueada['id']}");
-              reloadData();
+
+          bool jaExiste = false;
+          String idIndexJaExistente = "";
+          for (int i = 0; i < _items.length; i++) {
+            if (_items[i]['data'] == data.data) {
+              jaExiste = true;
+              idIndexJaExistente = _items[i]['id'];
+              break;
             }
-          });
+          }
+
+          if (jaExiste) {
+            showDialogDataJaBloqueada(data, idIndexJaExistente);
+          } else {
+            _blocSubscription = bloc.stream.listen((state) async {
+              if (state is LoadedState) {
+                //print("O ID DO CARD ADICIONADO É: ${state.dataBloqueada['id']}");
+                reloadData();
+              }
+            });
+          }
         }
       },
       style: ElevatedButton.styleFrom(
@@ -290,5 +301,121 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
         _selectDate(context);
       },
     );
+  }
+
+  void showDialogDataJaBloqueada(DataBloqueada data, String idIndex) async {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 30),
+              const Text(
+                'Essa data já está bloqueada! Você deseja escolher outra data?',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await cancelarBloqueio(data);
+                    },
+                    child: const Text('Cancelar'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      showDialogEscolherNovaData(data, idIndex);
+                    },
+                    child: const Text('Sim'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void showDialogEscolherNovaData(DataBloqueada data, String idIndex) async {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 30),
+              const Text(
+                'Selecione a nova data a ser bloqueada: ',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              textForm(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await cancelarBloqueio(data);
+                    },
+                    child: const Text('Cancelar'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      if (_dateController.text != data.data) {
+                        data.data = _dateController.text;
+                        Navigator.pop(context);
+                        atualizarDataBloqueio(idIndex);
+                      }
+                    },
+                    child: const Text('Bloquear'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void alterarDataEscolhida() {}
+
+  Future cancelarBloqueio(DataBloqueada data) async {
+    final bloc = context.read<DataBloqueadaBloc>();
+    return bloc.add(DeleteDataBloqueadaEvent(data.id));
+  }
+
+  Future atualizarDataBloqueio(dynamic hash) async {
+    _blocSubscription?.cancel();
+    final bloc = context.read<DataBloqueadaBloc>();
+    final String id = data.id;
+    print("ID: $id");
+    print("Data atual: ${data.data}");
+    bloc.add(UpdateDataBloqueadaEvent(data.id, data));
+    _blocSubscription = bloc.stream.listen((state) async {
+      if (state is LoadedState) {
+        reloadData();
+      }
+    });
+    return _blocSubscription;
   }
 }
