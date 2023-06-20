@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>84497181841-s45s3k1q8j28a6q6tqksa66tjvgqlt5b.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.84497181841-s45s3k1q8j28a6q6tqksa66tjvgqlt5b</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDuIKCYEoteVhvOeB67fiqsIS3Yu9Ec8A0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>84497181841</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.projetoMobile</string>
+	<key>PROJECT_ID</key>
+	<string>churrascaria-mobile</string>
+	<key>STORAGE_BUCKET</key>
+	<string>churrascaria-mobile.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:84497181841:ios:2223758d7cd76c06c82330</string>
+	<key>DATABASE_URL</key>
+	<string>https://churrascaria-mobile-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

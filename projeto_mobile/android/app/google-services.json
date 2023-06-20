@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "84497181841",
+    "firebase_url": "https://churrascaria-mobile-default-rtdb.firebaseio.com",
+    "project_id": "churrascaria-mobile",
+    "storage_bucket": "churrascaria-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84497181841:android:76db8140c136e915c82330",
+        "android_client_info": {
+          "package_name": "com.example.projeto_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "84497181841-voakluedqtvhtdghbi79eru66rs5h753.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9a3TaK7x6lQznqZxT0LGnjTX3S2ouqC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "84497181841-voakluedqtvhtdghbi79eru66rs5h753.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "84497181841-11o1gudtpn6vheuvedpibqghjrlf3v9e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.projetoMobile.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84497181841:android:6eaee13408cb0a46c82330",
+        "android_client_info": {
+          "package_name": "com.example.teste"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "84497181841-voakluedqtvhtdghbi79eru66rs5h753.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9a3TaK7x6lQznqZxT0LGnjTX3S2ouqC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "84497181841-voakluedqtvhtdghbi79eru66rs5h753.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "84497181841-11o1gudtpn6vheuvedpibqghjrlf3v9e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.projetoMobile.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
