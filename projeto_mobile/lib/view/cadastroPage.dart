@@ -1,8 +1,16 @@
 // ignore: file_names
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-import '../../model/pessoaData.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../model/dadosUsuario.dart';
 import '../../model/routes.dart';
+import '../bloc/dadosUsuario/dadosUsuario_bloc.dart';
+import '../bloc/dadosUsuario/dadosUsuario_event.dart';
+import '../bloc/dadosUsuario/dadosUsuario_state.dart';
+
+import 'package:hive/hive.dart';
 
 class CadastroPage extends StatefulWidget {
   const CadastroPage({super.key, required this.title});
@@ -15,7 +23,9 @@ class CadastroPage extends StatefulWidget {
 
 class _CadastroPageState extends State<CadastroPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final PessoaData _pessoaDataCadastro = PessoaData();
+  final DadosUsuario _dadosUsuarioCadastro = DadosUsuario();
+  StreamSubscription<DadosUsuarioState>? _blocSubscription;
+  final Box _textformValues = Hive.box("textform_values");
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +66,7 @@ class _CadastroPageState extends State<CadastroPage> {
                       const SizedBox(height: 20),
                       cpfField(),
                       const SizedBox(height: 20),
-                      passwordField(),
+                      senhaField(),
                       const SizedBox(height: 20),
                       emailField(),
                       const SizedBox(height: 20),
@@ -99,7 +109,7 @@ class _CadastroPageState extends State<CadastroPage> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.nome = value ?? "";
+          _dadosUsuarioCadastro.nome = value ?? "";
         },
       ),
     );
@@ -132,7 +142,7 @@ class _CadastroPageState extends State<CadastroPage> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.tel = value ?? "";
+          _dadosUsuarioCadastro.telefone = value ?? "";
         },
       ),
     );
@@ -170,7 +180,7 @@ class _CadastroPageState extends State<CadastroPage> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.email = value ?? "";
+          _dadosUsuarioCadastro.email = value ?? "";
         },
       ),
     );
@@ -203,13 +213,13 @@ class _CadastroPageState extends State<CadastroPage> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.cpf = value ?? "";
+          _dadosUsuarioCadastro.cpf = value ?? "";
         },
       ),
     );
   }
 
-  Widget passwordField() {
+  Widget senhaField() {
     return SizedBox(
       width: 250,
       child: TextFormField(
@@ -237,7 +247,7 @@ class _CadastroPageState extends State<CadastroPage> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.password = value ?? "";
+          _dadosUsuarioCadastro.senha = value ?? "";
         },
       ),
     );
@@ -248,11 +258,15 @@ class _CadastroPageState extends State<CadastroPage> {
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
-            Navigator.pushNamed(
-              context,
-              Routes.login,
-              arguments: _pessoaDataCadastro.cpf, //define your route name
-            );
+            final bloc = context.read<DadosUsuarioBloc>();
+            _blocSubscription?.cancel();
+
+            bloc.add(InsertDadosUsuarioEvent(_dadosUsuarioCadastro));
+
+            _textformValues.put('cpf', _dadosUsuarioCadastro.cpf);
+            _textformValues.put('senha', _dadosUsuarioCadastro.senha);
+
+            showDialogCadastroEfetuadoComSucesso();
           }
         },
         style: ButtonStyle(
@@ -270,5 +284,47 @@ class _CadastroPageState extends State<CadastroPage> {
           "Entrar",
           style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
         ));
+  }
+
+  void showDialogCadastroEfetuadoComSucesso() async {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 30),
+              const Text(
+                'Cadastro efetuado com sucesso! Faça Login.',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(
+                        context,
+                        Routes.login,
+                        arguments: _dadosUsuarioCadastro.cpf,
+                      );
+                    },
+                    child: const Text('Ok'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

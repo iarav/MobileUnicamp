@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 
-import '../../bloc/dataBloqueada_bloc.dart';
-import '../../bloc/dataBloqueada_event.dart';
-import '../../bloc/dataBloqueada_state.dart';
+import '../../bloc/dataBloqueada/dataBloqueada_bloc.dart';
+import '../../bloc/dataBloqueada/dataBloqueada_event.dart';
+import '../../bloc/dataBloqueada/dataBloqueada_state.dart';
 import '../../model/datasBloqueadas.dart';
 
 class AdmBloquearData extends StatefulWidget {
@@ -43,7 +43,9 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
 
   void reloadData() async {
     _boxReservasCanceladas.clear();
-
+    if (!mounted) {
+      return;
+    }
     final bloc = DataBloqueadaBloc(context);
 
     bloc.add(GetAllDataBloqueadaEvent());
@@ -53,15 +55,17 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
       if (state is LoadedState) {
         // Atualize a lista _items com os dados do estado LoadedState
         List<Map<String, dynamic>> itemsInicial = [];
-        for (var value in state.dataBloqueada.values) {
-          if (value is Map<String, dynamic>) {
-            itemsInicial.add({
-              'id': value['id'],
-              'data': value['data'],
-            });
+        if (state.dataBloqueada != null) {
+          for (var value in state.dataBloqueada!.values) {
+            if (value is Map<String, dynamic>) {
+              itemsInicial.add({
+                'id': value['id'],
+                'data': value['data'],
+              });
+            }
           }
+          await _boxReservasCanceladas.addAll(itemsInicial);
         }
-        await _boxReservasCanceladas.addAll(itemsInicial);
         _refreshListView();
       }
     });
@@ -187,25 +191,23 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
             height: 30,
           ),
           //O expanded diz que o listView ocupará todo o resto da tela, ele é necessário
-          Expanded(
-            child: _items.isNotEmpty
-                ? BlocBuilder<DataBloqueadaBloc, DataBloqueadaState>(
-                    builder: (context, state) {
-                    return SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      child: ((state is LoadingState) ||
-                              (state is InicialState && _items.isEmpty))
-                          ? const Center(child: CircularProgressIndicator())
-                          : ListView.builder(
-                              itemCount: (_items.length),
-                              itemBuilder: (context, index) {
-                                return _blocBuilder(index);
-                              },
-                            ),
-                    );
-                  })
-                : const Text('Nenhum dado disponível.'),
-          ),
+          Expanded(child: BlocBuilder<DataBloqueadaBloc, DataBloqueadaState>(
+              builder: (context, state) {
+            return _items.isNotEmpty
+                ? SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.75,
+                    child: ((state is LoadingState) ||
+                            (state is InicialState && _items.isEmpty))
+                        ? const Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                            itemCount: (_items.length),
+                            itemBuilder: (context, index) {
+                              return _blocBuilder(index);
+                            },
+                          ),
+                  )
+                : const Text('Nenhum dado disponível.');
+          })),
         ],
       ),
     );

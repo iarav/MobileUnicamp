@@ -6,6 +6,7 @@ import '../model/save_path.dart';
 import 'minhasReservas.dart';
 import 'opcoesReserva.dart';
 import 'sobreAChurrascaria.dart';
+import 'package:hive/hive.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
@@ -17,6 +18,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final Box _textformValues = Hive.box("textform_values");
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -37,9 +40,10 @@ class _MainPageState extends State<MainPage> {
                     ),
                     onPressed: () {
                       SavePath.changePath(Routes.home);
+                      _textformValues.put('loggedUserId', null);
                       Navigator.pushNamed(
                         context,
-                        Routes.home, //define your route name
+                        Routes.home,
                       );
                     },
                   ),

@@ -7,7 +7,7 @@ class InicialState extends DataBloqueadaState {}
 class LoadingState extends DataBloqueadaState {}
 
 class LoadedState extends DataBloqueadaState {
-  final Map<String, dynamic> dataBloqueada;
+  final Map<String, dynamic>? dataBloqueada;
   LoadedState(this.dataBloqueada);
 }
 

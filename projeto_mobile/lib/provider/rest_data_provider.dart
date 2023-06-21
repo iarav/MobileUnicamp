@@ -13,7 +13,7 @@ class RestDataProvider {
   String baseUrl =
       "https://churrascaria-mobile-default-rtdb.firebaseio.com/datasBloqueadas";
 
-  Future<Map<String, dynamic>> getAllDataBloqueada() async {
+  Future<Map<String, dynamic>?> getAllDataBloqueada() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl.json'));
       if (response.statusCode == 200) {

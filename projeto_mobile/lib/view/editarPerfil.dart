@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../model/pessoaData.dart';
+import '../model/dadosUsuario.dart';
 import '../model/routes.dart';
 import '../model/save_path.dart';
 
@@ -15,8 +15,8 @@ class EditarPerfil extends StatefulWidget {
 
 class _EditarPerfilState extends State<EditarPerfil> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final PessoaData _pessoaDataCadastro = PessoaData();
-  final _passwordController = TextEditingController();
+  final DadosUsuario _dadosUsuarioCadastro = DadosUsuario();
+  final _senhaController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +38,15 @@ class _EditarPerfilState extends State<EditarPerfil> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("EDITAR PERFIL",
-                        style: TextStyle(
-                            fontFamily: 'bright',
-                            color: Color(0xFF05173D),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 50,
-                            ),
-                        ),
+                    Text(
+                      "EDITAR PERFIL",
+                      style: TextStyle(
+                        fontFamily: 'bright',
+                        color: Color(0xFF05173D),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 50,
+                      ),
+                    ),
                   ],
                 ),
                 Form(
@@ -59,15 +60,15 @@ class _EditarPerfilState extends State<EditarPerfil> {
                       const SizedBox(height: 20),
                       emailField(),
                       const SizedBox(height: 20),
-                      passwordField(),
+                      senhaField(),
                       const SizedBox(height: 20),
-                      confirmpasswordField(),
+                      confirmsenhaField(),
                       const SizedBox(height: 13),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [                      
+                        children: [
                           botaoCancelar(widget.title),
-                          const SizedBox(width: 5),  
+                          const SizedBox(width: 5),
                           botaoSalvar(widget.title),
                         ],
                       ),
@@ -107,7 +108,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.nome = value ?? "";
+          _dadosUsuarioCadastro.nome = value ?? "";
         },
       ),
     );
@@ -140,7 +141,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.tel = value ?? "";
+          _dadosUsuarioCadastro.telefone = value ?? "";
         },
       ),
     );
@@ -178,7 +179,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.email = value ?? "";
+          _dadosUsuarioCadastro.email = value ?? "";
         },
       ),
     );
@@ -211,17 +212,17 @@ class _EditarPerfilState extends State<EditarPerfil> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.cpf = value ?? "";
+          _dadosUsuarioCadastro.cpf = value ?? "";
         },
       ),
     );
   }
 
-  Widget passwordField() {
+  Widget senhaField() {
     return SizedBox(
       width: 250,
       child: TextFormField(
-        controller: _passwordController,
+        controller: _senhaController,
         obscureText: true,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
@@ -246,13 +247,13 @@ class _EditarPerfilState extends State<EditarPerfil> {
           return value;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.password = value ?? "";
+          _dadosUsuarioCadastro.senha = value ?? "";
         },
       ),
     );
   }
 
-  Widget confirmpasswordField() {
+  Widget confirmsenhaField() {
     return SizedBox(
       width: 250,
       child: TextFormField(
@@ -274,7 +275,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
             if (value.isEmpty) {
               return "Campo obrigatório.";
             }
-            if (value != _passwordController.text) {
+            if (value != _senhaController.text) {
             } else {
               return "Senha incorreta. Confirme a mesma senha acima.";
             }
@@ -284,7 +285,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
           return null;
         },
         onSaved: (String? value) {
-          _pessoaDataCadastro.confirmacaoPassword = value ?? "";
+          _dadosUsuarioCadastro.confirmacaoSenha = value ?? "";
         },
       ),
     );
@@ -292,70 +293,72 @@ class _EditarPerfilState extends State<EditarPerfil> {
 
   Widget botaoSalvar(String title) {
     return ElevatedButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-          }
-        },
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(
-                const Color(0xFF05173D)),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
+      onPressed: () {
+        if (_formKey.currentState!.validate()) {
+          _formKey.currentState!.save();
+        }
+      },
+      style: ButtonStyle(
+          backgroundColor:
+              MaterialStateProperty.all<Color>(const Color(0xFF05173D)),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
             ),
-            padding: MaterialStateProperty.all<EdgeInsets>(
-              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
-            )),
-        child: const Text(
-            "Salvar",
-            style: TextStyle(
-              color: Color.fromARGB(255, 255, 255, 255),
-              fontSize: 15,
-              shadows: [
-                Shadow(
-                  blurRadius: 2.0,
-                  color: Color.fromARGB(255, 24, 24, 24),
-                  offset: Offset(1.0, 1.0),
-                ),
-              ],
+          ),
+          padding: MaterialStateProperty.all<EdgeInsets>(
+            const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
+          )),
+      child: const Text(
+        "Salvar",
+        style: TextStyle(
+          color: Color.fromARGB(255, 255, 255, 255),
+          fontSize: 15,
+          shadows: [
+            Shadow(
+              blurRadius: 2.0,
+              color: Color.fromARGB(255, 24, 24, 24),
+              offset: Offset(1.0, 1.0),
             ),
-          ),);
+          ],
+        ),
+      ),
+    );
   }
 
   Widget botaoCancelar(String title) {
     return ElevatedButton(
-        onPressed: () {
-          SavePath.changePath(Routes.mainPage);
-          Navigator.pushNamed(
-            context,
-            Routes.mainPage,
-          );
-        },
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(
-                const Color.fromARGB(255, 172, 0, 0)),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
+      onPressed: () {
+        SavePath.changePath(Routes.mainPage);
+        Navigator.pushNamed(
+          context,
+          Routes.mainPage,
+        );
+      },
+      style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(
+              const Color.fromARGB(255, 172, 0, 0)),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
             ),
-            padding: MaterialStateProperty.all<EdgeInsets>(
-              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
-            )),
-        child: const Text(
-            "Cancelar",
-            style: TextStyle(
-              fontSize: 15,
-              shadows: [
-                Shadow(
-                  blurRadius: 2.0,
-                  color: Color.fromARGB(255, 24, 24, 24),
-                  offset: Offset(1.0, 1.0),
-                ),
-              ],
+          ),
+          padding: MaterialStateProperty.all<EdgeInsets>(
+            const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
+          )),
+      child: const Text(
+        "Cancelar",
+        style: TextStyle(
+          fontSize: 15,
+          shadows: [
+            Shadow(
+              blurRadius: 2.0,
+              color: Color.fromARGB(255, 24, 24, 24),
+              offset: Offset(1.0, 1.0),
             ),
-          ),);
+          ],
+        ),
+      ),
+    );
   }
 }

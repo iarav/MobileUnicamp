@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../provider/rest_provider.dart';
+import '../../provider/rest_data_provider.dart';
 import 'dataBloqueada_event.dart';
 import 'dataBloqueada_state.dart';
 

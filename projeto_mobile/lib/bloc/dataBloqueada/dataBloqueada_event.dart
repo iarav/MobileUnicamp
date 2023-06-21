@@ -1,4 +1,4 @@
-import '../model/datasBloqueadas.dart';
+import '../../model/datasBloqueadas.dart';
 
 abstract class DataBloqueadaEvent {}
 

@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'bloc/dataBloqueada_bloc.dart';
+import 'bloc/dataBloqueada/dataBloqueada_bloc.dart';
+import 'bloc/dadosUsuario/dadosUsuario_bloc.dart';
 import 'configs/hive_configs.dart';
 import 'model/routes.dart';
 
@@ -31,16 +32,19 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.lastRoute});
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<DataBloqueadaBloc>(
-      create: (context) => DataBloqueadaBloc(context),
-      child: MaterialApp(
-        title: "Du e Paulinho Churrascos",
-        initialRoute: lastRoute,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: const Color.fromARGB(255, 209, 150, 92),
+    return BlocProvider<DadosUsuarioBloc>(
+      create: (context) => DadosUsuarioBloc(context),
+      child: BlocProvider<DataBloqueadaBloc>(
+        create: (context) => DataBloqueadaBloc(context),
+        child: MaterialApp(
+          title: "Du e Paulinho Churrascos",
+          initialRoute: lastRoute,
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primaryColor: const Color.fromARGB(255, 209, 150, 92),
+          ),
+          routes: Routes.getRoutes(),
         ),
-        routes: Routes.getRoutes(),
       ),
     );
   }
