@@ -30,7 +30,7 @@ class RestUsuarioProvider {
     }
   }
 
-  Future<Map<String, dynamic>> getDadosUsuario(dynamic id) async {
+  Future<Map<String, dynamic>?> getDadosUsuario(dynamic id) async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/$id.json'));
 

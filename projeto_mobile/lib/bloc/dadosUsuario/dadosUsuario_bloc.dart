@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../provider/rest_usuario_provider.dart';
 import 'dadosUsuario_event.dart';
-import 'dadosUsuario_state.dart';
+import '../bloc_state.dart';
 
-class DadosUsuarioBloc extends Bloc<DadosUsuarioEvent, DadosUsuarioState> {
+class DadosUsuarioBloc extends Bloc<DadosUsuarioEvent, BlocState> {
   DadosUsuarioBloc(BuildContext context) : super(InicialState()) {
     on<GetAllDadosUsuarioEvent>(getAllEvent);
     on<InsertDadosUsuarioEvent>(submitEvent);
@@ -17,8 +17,8 @@ class DadosUsuarioBloc extends Bloc<DadosUsuarioEvent, DadosUsuarioState> {
   Future<void> getAllEvent(event, Emitter emit) async {
     emit(LoadingState());
     try {
-      final data = await RestUsuarioProvider.helper.getAllUsuarios();
-      //o emit levará um Map com todos os dados
+      final data =
+          await RestUsuarioProvider.helper.getDadosUsuario(event.usuarioId);
       emit(LoadedState(data));
     } catch (e) {
       print("ERRO: getAllEvent -> $e");

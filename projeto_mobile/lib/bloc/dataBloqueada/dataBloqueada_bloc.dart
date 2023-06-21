@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../provider/rest_data_provider.dart';
 import 'dataBloqueada_event.dart';
-import 'dataBloqueada_state.dart';
+import '../bloc_state.dart';
 
-class DataBloqueadaBloc extends Bloc<DataBloqueadaEvent, DataBloqueadaState> {
+class DataBloqueadaBloc extends Bloc<DataBloqueadaEvent, BlocState> {
   DataBloqueadaBloc(BuildContext context) : super(InicialState()) {
     on<GetAllDataBloqueadaEvent>(getAllEvent);
     on<InsertDataBloqueadaEvent>(submitEvent);

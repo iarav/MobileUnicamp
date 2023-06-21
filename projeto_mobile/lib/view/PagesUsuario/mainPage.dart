@@ -1,8 +1,8 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
 
-import '../model/routes.dart';
-import '../model/save_path.dart';
+import '../../model/routes.dart';
+import '../../model/save_path.dart';
 import 'minhasReservas.dart';
 import 'opcoesReserva.dart';
 import 'sobreAChurrascaria.dart';

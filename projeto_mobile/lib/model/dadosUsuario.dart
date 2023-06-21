@@ -6,7 +6,6 @@ class DadosUsuario {
   String email = "";
   String telefone = "";
   String senha = "";
-  String confirmacaoSenha = "";
 
   toMap() {
     return {
@@ -17,5 +16,14 @@ class DadosUsuario {
       "telefone": telefone,
       "senha": senha
     };
+  }
+
+  converterParaDadosUsuario(Map<String, dynamic> dados) {
+    id = dados['id'];
+    nome = dados['nome'];
+    cpf = dados['cpf'];
+    email = dados['email'];
+    telefone = dados['telefone'];
+    senha = dados['senha'];
   }
 }

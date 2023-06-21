@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 class SobreAChurrascaria extends StatefulWidget {
   const SobreAChurrascaria({super.key});
 
@@ -22,27 +21,30 @@ class _SobreAChurrascariaState extends State<SobreAChurrascaria> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 imgChurrascaria(),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 const Text(
                   "Du e Paulinho Churrascos",
-                  style: TextStyle( 
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold
-                  ),
+                  style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 const SizedBox(
                   width: 345,
                   child: Text(
                     "Empreendedores autônomos, fornecemos o churrasco para você, do jeito que você quiser e quando quiser.",
-                    style: TextStyle( 
+                    style: TextStyle(
                       fontSize: 18,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 Container(
                   width: 350,
                   padding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
@@ -54,13 +56,13 @@ class _SobreAChurrascariaState extends State<SobreAChurrascaria> {
                     children: [
                       const Text(
                         "Contato:",
-                        style: TextStyle( 
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold
-                        ),
+                        style: TextStyle(
+                            fontSize: 32, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -69,19 +71,22 @@ class _SobreAChurrascariaState extends State<SobreAChurrascaria> {
                             width: 24,
                             height: 24,
                           ),
-                          const SizedBox(width: 5,),
+                          const SizedBox(
+                            width: 5,
+                          ),
                           const Text(
                             "(19) 999999-9999",
-                            style: TextStyle( 
-                              fontSize: 20,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500
-                            ),
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500),
                             textAlign: TextAlign.center,
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10,),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
@@ -90,14 +95,15 @@ class _SobreAChurrascariaState extends State<SobreAChurrascaria> {
                             color: Colors.black,
                             size: 26,
                           ),
-                          SizedBox(width: 5,),
+                          SizedBox(
+                            width: 5,
+                          ),
                           Text(
                             "churras@gmail.com",
-                            style: TextStyle( 
-                              fontSize: 20,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500
-                            ),
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -114,12 +120,10 @@ class _SobreAChurrascariaState extends State<SobreAChurrascaria> {
   }
 
   Widget imgChurrascaria() {
-  return Container(
-    height: 201,
-    width: 335,
-    padding: const EdgeInsets.all(3.3),
-    // color: const Color.fromARGB(255, 0, 255, 255),
-    child: Image.network('https://i.ibb.co/VJxXQyt/churrascaria-capa.jpg'),
-  );
-}
+    return Image.asset(
+      'lib/assets/churrascaria-capa.jpg',
+      height: 201,
+      width: 335,
+    );
+  }
 }

@@ -43,6 +43,7 @@ dependencies:
   firebase_core: ^2.13.0
   firebase_database: ^10.2.1
   firebase_auth: ^4.6.1
+  firebase_storage: ^11.2.3
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,7 @@ flutter:
     - lib/assets/whatsapp.svg
     - 'lib/assets/DU_PAULINHO.png'
     - 'lib/assets/logo_du_paulinho.png'
+    - 'lib/assets/churrascaria-capa.jpg'
   fonts:
     - family: bright
       fonts:

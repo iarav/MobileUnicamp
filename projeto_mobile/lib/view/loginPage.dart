@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:projeto_mobile/bloc/dadosUsuario/dadosUsuario_event.dart';
 import '../bloc/dadosUsuario/dadosUsuario_bloc.dart';
-import '../bloc/dadosUsuario/dadosUsuario_state.dart';
+import '../bloc/bloc_state.dart';
 import '../model/routes.dart';
 import '../model/save_path.dart';
 
@@ -152,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
             bloc.stream.listen((state) async {
               if (state is LoadedState) {
                 // Atualize a lista _items com os dados do estado LoadedState
-                Map<String, dynamic> loginMessage = state.dadosUsuario;
+                Map<String, dynamic>? loginMessage = state.dados;
                 showDialogLogin(loginMessage);
               }
             });

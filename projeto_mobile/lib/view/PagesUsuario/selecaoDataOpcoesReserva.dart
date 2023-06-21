@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../model/routes.dart';
+import '../../model/routes.dart';
 
 class SelecaoData extends StatefulWidget {
   const SelecaoData({super.key});

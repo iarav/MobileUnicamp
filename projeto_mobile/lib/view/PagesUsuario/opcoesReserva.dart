@@ -1,8 +1,8 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import '../model/routes.dart'; //import your routes.dart file
-import '../model/complete_data.dart';
+import '../../model/routes.dart'; //import your routes.dart file
+import '../../model/complete_data.dart';
 import 'selecaoDataOpcoesReserva.dart';
 
 class OpcoesDeReserva extends StatefulWidget {

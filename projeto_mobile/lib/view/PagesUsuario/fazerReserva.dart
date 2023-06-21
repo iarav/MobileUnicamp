@@ -1,10 +1,10 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
 
-import '../model/complete_data.dart';
-import '../model/reservaData.dart';
-import '../model/routes.dart';
-import '../model/save_path.dart';
+import '../../model/complete_data.dart';
+import '../../model/reservaData.dart';
+import '../../model/routes.dart';
+import '../../model/save_path.dart';
 
 class FazerReserva extends StatefulWidget {
   const FazerReserva({super.key, required this.title});
@@ -16,14 +16,18 @@ class FazerReserva extends StatefulWidget {
 }
 
 class _FazerReservaState extends State<FazerReserva> {
-  
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ReservaData _reservaData = ReservaData();
-  
+
   final CompleteModel completeModel = CompleteModel();
-  
+
   bool justEntered = true;
-  final List<String> itemsCombo = ['Combo Básico', 'Combo Silver', 'Combo Gold', 'Combo Premium'];
+  final List<String> itemsCombo = [
+    'Combo Básico',
+    'Combo Silver',
+    'Combo Gold',
+    'Combo Premium'
+  ];
   DateTime? _selectedDate;
 
   @override
@@ -31,26 +35,26 @@ class _FazerReservaState extends State<FazerReserva> {
     var item = ModalRoute.of(context)!.settings.arguments;
     // _reservaData.combo = item as String?;
 
-    if(item != null){
-      if(justEntered){
-        if(item is DateTime?){
+    if (item != null) {
+      if (justEntered) {
+        if (item is DateTime?) {
           _selectedDate = DateTime.parse('$item');
-        }else{
-            if(itemsCombo.contains(item)){
-                _reservaData.combo = '$item';
-            }
+        } else {
+          if (itemsCombo.contains(item)) {
+            _reservaData.combo = '$item';
+          }
         }
       }
     }
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(
-            widget.title,
-            style: const TextStyle(
-                fontFamily: 'bright', color: Color(0xFF05173D), fontSize: 24),
-          ),
-          backgroundColor: Theme.of(context).primaryColor,
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+              fontFamily: 'bright', color: Color(0xFF05173D), fontSize: 24),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -60,10 +64,7 @@ class _FazerReservaState extends State<FazerReserva> {
             children: const [
               Text(
                 "Reserva:",
-                style: TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold
-                ),
+                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -72,7 +73,7 @@ class _FazerReservaState extends State<FazerReserva> {
             key: _formKey,
             child: Column(
               children: [
-                const SizedBox(height: 35),    
+                const SizedBox(height: 35),
                 comboField(itemsCombo),
                 const SizedBox(height: 25),
                 qntPessoasSlider(),
@@ -90,23 +91,20 @@ class _FazerReservaState extends State<FazerReserva> {
     );
   }
 
-   Widget comboField(List<String> itemsCombo){
+  Widget comboField(List<String> itemsCombo) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
           "Combo: ",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
         ),
         DropdownButton<String>(
-          value: _reservaData.combo, 
+          value: _reservaData.combo,
           onChanged: (String? newValue) {
             justEntered = false;
             setState(() {
-              _reservaData.combo = newValue; 
+              _reservaData.combo = newValue;
             });
           },
           items: itemsCombo
@@ -114,46 +112,43 @@ class _FazerReservaState extends State<FazerReserva> {
                     value: option,
                     child: Text(option),
                   ))
-              .toList(), 
+              .toList(),
         ),
       ],
     );
   }
 
-  Widget qntPessoasSlider(){
-    int divisoes = 9; 
+  Widget qntPessoasSlider() {
+    int divisoes = 9;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
           "Quantidade \nde pessoas: ",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         Slider(
-          min: 100,
-          max: 1000,
-          divisions: divisoes,
-          value: completeModel.quantidadePessoas, 
-          onChanged: (double value){
-            setState(() {
-              completeModel.quantidadePessoas = value.roundToDouble();
-            });
-          }),
-        Text("${completeModel.quantidadePessoas.toInt()}"),  
+            min: 100,
+            max: 1000,
+            divisions: divisoes,
+            value: completeModel.quantidadePessoas,
+            onChanged: (double value) {
+              setState(() {
+                completeModel.quantidadePessoas = value.roundToDouble();
+              });
+            }),
+        Text("${completeModel.quantidadePessoas.toInt()}"),
       ],
     );
   }
 
-  Widget getPreco(){
+  Widget getPreco() {
     int? indexCombo, precoPorPessoa;
-    if(_reservaData.combo != null){
+    if (_reservaData.combo != null) {
       indexCombo = itemsCombo.indexOf(_reservaData.combo!);
     }
 
-    switch(indexCombo){
+    switch (indexCombo) {
       case 0:
         precoPorPessoa = 2;
         break;
@@ -170,7 +165,8 @@ class _FazerReservaState extends State<FazerReserva> {
         precoPorPessoa = 2;
     }
 
-    int preco = (precoPorPessoa * completeModel.quantidadePessoas * 0.5).toInt();
+    int preco =
+        (precoPorPessoa * completeModel.quantidadePessoas * 0.5).toInt();
 
     return Container(
       decoration: const BoxDecoration(
@@ -178,33 +174,25 @@ class _FazerReservaState extends State<FazerReserva> {
         color: Color.fromARGB(143, 149, 211, 255),
       ),
       padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-      child: Text(
-        "Preço: $preco" ,
-        style: const TextStyle(
-          fontSize: 30,
-          fontWeight: FontWeight.w500
-        )
-      ),
+      child: Text("Preço: $preco",
+          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w500)),
     );
   }
 
-  Widget selectData(){
+  Widget selectData() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
           'Data: ',
-          style: TextStyle( 
-            fontSize: 22,
-            fontWeight: FontWeight.w500
-          ),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
           textAlign: TextAlign.center,
         ),
         Text(
           _selectedDate == null
               ? '__/__/____'
               : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-          style: const TextStyle( 
+          style: const TextStyle(
             fontSize: 22,
           ),
           textAlign: TextAlign.center,
@@ -232,42 +220,41 @@ class _FazerReservaState extends State<FazerReserva> {
     }
   }
 
-  Widget botaoFazerReserva(){
+  Widget botaoFazerReserva() {
     return ElevatedButton(
-      onPressed: (){
-        if(_selectedDate != null && _reservaData.combo != null){
-          showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => dialgoReservaEfeuada('A reserva foi efetuada com sucesso!')
-          );
-        }else{
-          showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => dialgoReservaEfeuada('Preencha todos os campos!')
-          );
-        }
-      }, 
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF05173D)),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
+        onPressed: () {
+          if (_selectedDate != null && _reservaData.combo != null) {
+            showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => dialgoReservaEfeuada(
+                    'A reserva foi efetuada com sucesso!'));
+          } else {
+            showDialog<String>(
+                context: context,
+                builder: (BuildContext context) =>
+                    dialgoReservaEfeuada('Preencha todos os campos!'));
+          }
+        },
+        style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(const Color(0xFF05173D)),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
+            )),
+        child: const Text(
+          "Fazer Reserva",
+          style: TextStyle(
+            fontSize: 15,
           ),
-        ),
-        padding: MaterialStateProperty.all<EdgeInsets>(
-          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 34.0),
-        )
-      ),
-      child: const Text(
-        "Fazer Reserva",
-        style: TextStyle(
-          fontSize: 15,
-        ),
-      )
-    );
+        ));
   }
 
-  Widget dialgoReservaEfeuada(String texto){
+  Widget dialgoReservaEfeuada(String texto) {
     return Dialog(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -278,7 +265,7 @@ class _FazerReservaState extends State<FazerReserva> {
             const SizedBox(height: 10),
             Text(
               texto,
-              style: const TextStyle( 
+              style: const TextStyle(
                 fontSize: 20,
               ),
               textAlign: TextAlign.center,
@@ -287,7 +274,7 @@ class _FazerReservaState extends State<FazerReserva> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                if(texto == 'A reserva foi efetuada com sucesso!'){
+                if (texto == 'A reserva foi efetuada com sucesso!') {
                   SavePath.changePath(Routes.mainPage);
                   Navigator.pushNamed(
                     context,

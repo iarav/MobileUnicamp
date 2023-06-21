@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 
 import '../../bloc/dataBloqueada/dataBloqueada_bloc.dart';
 import '../../bloc/dataBloqueada/dataBloqueada_event.dart';
-import '../../bloc/dataBloqueada/dataBloqueada_state.dart';
+import '../../bloc/bloc_state.dart';
 import '../../model/datasBloqueadas.dart';
 
 class AdmBloquearData extends StatefulWidget {
@@ -23,7 +23,7 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
   final TextEditingController _dateController = TextEditingController();
   DateTime? _selectedDate;
   final DataBloqueada data = DataBloqueada("");
-  StreamSubscription<DataBloqueadaState>? _blocSubscription;
+  StreamSubscription<BlocState>? _blocSubscription;
 
   final _boxReservasCanceladas = Hive.box('reservas_canceladas');
   List<Map<String, dynamic>> _items = [];
@@ -55,8 +55,8 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
       if (state is LoadedState) {
         // Atualize a lista _items com os dados do estado LoadedState
         List<Map<String, dynamic>> itemsInicial = [];
-        if (state.dataBloqueada != null) {
-          for (var value in state.dataBloqueada!.values) {
+        if (state.dados != null) {
+          for (var value in state.dados!.values) {
             if (value is Map<String, dynamic>) {
               itemsInicial.add({
                 'id': value['id'],
@@ -88,8 +88,7 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
   }
 
   Widget _blocBuilder(dynamic index) {
-    return BlocBuilder<DataBloqueadaBloc, DataBloqueadaState>(
-        builder: (context, state) {
+    return BlocBuilder<DataBloqueadaBloc, BlocState>(builder: (context, state) {
       if (state is LoadedState || state is InicialState) {
         return Card(
           color: const Color.fromARGB(90, 180, 0, 0),
@@ -191,7 +190,7 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
             height: 30,
           ),
           //O expanded diz que o listView ocupará todo o resto da tela, ele é necessário
-          Expanded(child: BlocBuilder<DataBloqueadaBloc, DataBloqueadaState>(
+          Expanded(child: BlocBuilder<DataBloqueadaBloc, BlocState>(
               builder: (context, state) {
             return _items.isNotEmpty
                 ? SizedBox(
@@ -259,7 +258,6 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
           } else {
             _blocSubscription = bloc.stream.listen((state) async {
               if (state is LoadedState) {
-                //print("O ID DO CARD ADICIONADO É: ${state.dataBloqueada['id']}");
                 reloadData();
               }
             });
@@ -409,9 +407,6 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
   Future atualizarDataBloqueio(dynamic hash) async {
     _blocSubscription?.cancel();
     final bloc = context.read<DataBloqueadaBloc>();
-    final String id = data.id;
-    print("ID: $id");
-    print("Data atual: ${data.data}");
     bloc.add(UpdateDataBloqueadaEvent(data.id, data));
     _blocSubscription = bloc.stream.listen((state) async {
       if (state is LoadedState) {

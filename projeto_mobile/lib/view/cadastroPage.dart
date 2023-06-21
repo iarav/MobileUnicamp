@@ -8,7 +8,7 @@ import '../model/dadosUsuario.dart';
 import '../../model/routes.dart';
 import '../bloc/dadosUsuario/dadosUsuario_bloc.dart';
 import '../bloc/dadosUsuario/dadosUsuario_event.dart';
-import '../bloc/dadosUsuario/dadosUsuario_state.dart';
+import '../bloc/bloc_state.dart';
 
 import 'package:hive/hive.dart';
 
@@ -24,7 +24,7 @@ class CadastroPage extends StatefulWidget {
 class _CadastroPageState extends State<CadastroPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final DadosUsuario _dadosUsuarioCadastro = DadosUsuario();
-  StreamSubscription<DadosUsuarioState>? _blocSubscription;
+  StreamSubscription<BlocState>? _blocSubscription;
   final Box _textformValues = Hive.box("textform_values");
 
   @override

@@ -2,7 +2,10 @@ import '../../model/dadosUsuario.dart';
 
 abstract class DadosUsuarioEvent {}
 
-class GetAllDadosUsuarioEvent extends DadosUsuarioEvent {}
+class GetAllDadosUsuarioEvent extends DadosUsuarioEvent {
+  final String usuarioId;
+  GetAllDadosUsuarioEvent(this.usuarioId);
+}
 
 class InsertDadosUsuarioEvent extends DadosUsuarioEvent {
   final DadosUsuario data;

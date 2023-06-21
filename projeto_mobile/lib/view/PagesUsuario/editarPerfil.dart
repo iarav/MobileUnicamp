@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-
-import '../model/dadosUsuario.dart';
-import '../model/routes.dart';
-import '../model/save_path.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:projeto_mobile/bloc/dadosUsuario/dadosUsuario_bloc.dart';
+import 'package:projeto_mobile/bloc/dadosUsuario/dadosUsuario_event.dart';
+import '../../bloc/bloc_state.dart';
+import '../../model/dadosUsuario.dart';
+import '../../model/routes.dart';
+import '../../model/save_path.dart';
 
 class EditarPerfil extends StatefulWidget {
   const EditarPerfil({super.key, required this.title});
@@ -16,7 +20,21 @@ class EditarPerfil extends StatefulWidget {
 class _EditarPerfilState extends State<EditarPerfil> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final DadosUsuario _dadosUsuarioCadastro = DadosUsuario();
-  final _senhaController = TextEditingController();
+  final Box _textformValues = Hive.box("textform_values");
+  TextEditingController nomeController = TextEditingController();
+  TextEditingController cpfController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController telefoneController = TextEditingController();
+  TextEditingController senhaController = TextEditingController();
+  String loggedUserId = "";
+  String? imagePath;
+
+  @override
+  void initState() {
+    super.initState();
+    loggedUserId = _textformValues.get('loggedUserId');
+    getDadosUsuario();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +67,48 @@ class _EditarPerfilState extends State<EditarPerfil> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 15),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    imagePath != null
+                        ? Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: AssetImage(imagePath!),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                        : CircleAvatar(
+                            radius: 75,
+                            backgroundColor: Color.fromARGB(255, 78, 78, 78),
+                            child: Icon(
+                              Icons.person,
+                              size: 80,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Color.fromARGB(255, 128, 9, 0),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.upload),
+                      color: const Color.fromARGB(255, 0, 72, 132),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
                 Form(
                   key: _formKey,
                   child: Column(
@@ -61,8 +121,6 @@ class _EditarPerfilState extends State<EditarPerfil> {
                       emailField(),
                       const SizedBox(height: 20),
                       senhaField(),
-                      const SizedBox(height: 20),
-                      confirmsenhaField(),
                       const SizedBox(height: 13),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -81,10 +139,36 @@ class _EditarPerfilState extends State<EditarPerfil> {
         ));
   }
 
+  void getDadosUsuario() async {
+    if (!mounted) {
+      return;
+    }
+    final bloc = DadosUsuarioBloc(context);
+
+    bloc.add(GetAllDadosUsuarioEvent(loggedUserId));
+
+    bloc.stream.listen((state) async {
+      if (state is LoadedState) {
+        Map<String, dynamic>? usuario = state.dados;
+        if (usuario != null) {
+          _dadosUsuarioCadastro.converterParaDadosUsuario(usuario);
+          nomeController.text = _dadosUsuarioCadastro.nome;
+          cpfController.text = _dadosUsuarioCadastro.cpf;
+          emailController.text = _dadosUsuarioCadastro.email;
+          telefoneController.text = _dadosUsuarioCadastro.telefone;
+          senhaController.text = _dadosUsuarioCadastro.senha;
+        } else {
+          showDialogDadosNaoEncontrados();
+        }
+      }
+    });
+  }
+
   Widget nomeField() {
     return SizedBox(
       width: 250,
       child: TextFormField(
+        controller: nomeController,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: 'Nome',
@@ -118,6 +202,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
     return SizedBox(
       width: 250,
       child: TextFormField(
+        controller: telefoneController,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: 'Telefone',
@@ -151,6 +236,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
     return SizedBox(
       width: 250,
       child: TextFormField(
+        controller: emailController,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: 'E-mail',
@@ -189,6 +275,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
     return SizedBox(
       width: 250,
       child: TextFormField(
+        controller: cpfController,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: 'CPF',
@@ -222,7 +309,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
     return SizedBox(
       width: 250,
       child: TextFormField(
-        controller: _senhaController,
+        controller: senhaController,
         obscureText: true,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
@@ -244,48 +331,10 @@ class _EditarPerfilState extends State<EditarPerfil> {
           } else {
             return "Insira algum valor.";
           }
-          return value;
-        },
-        onSaved: (String? value) {
-          _dadosUsuarioCadastro.senha = value ?? "";
-        },
-      ),
-    );
-  }
-
-  Widget confirmsenhaField() {
-    return SizedBox(
-      width: 250,
-      child: TextFormField(
-        obscureText: true,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: 'Confirmação enha',
-          labelStyle: TextStyle(
-            color: Colors.grey[700],
-            fontWeight: FontWeight.bold,
-          ),
-          hintText: 'Confirme a senha acima',
-          hintStyle: TextStyle(
-            color: Colors.grey[400],
-          ),
-        ),
-        validator: (String? value) {
-          if (value != null) {
-            if (value.isEmpty) {
-              return "Campo obrigatório.";
-            }
-            if (value != _senhaController.text) {
-            } else {
-              return "Senha incorreta. Confirme a mesma senha acima.";
-            }
-          } else {
-            return "Insira o nome completo.";
-          }
           return null;
         },
         onSaved: (String? value) {
-          _dadosUsuarioCadastro.confirmacaoSenha = value ?? "";
+          _dadosUsuarioCadastro.senha = value ?? "";
         },
       ),
     );
@@ -296,6 +345,14 @@ class _EditarPerfilState extends State<EditarPerfil> {
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
+          final bloc = context.read<DadosUsuarioBloc>();
+          bloc.add(
+              UpdateDadosUsuarioEvent(loggedUserId, _dadosUsuarioCadastro));
+          bloc.stream.listen((state) async {
+            if (state is LoadedState) {
+              showDialogAtualizacaoRealizada();
+            }
+          });
         }
       },
       style: ButtonStyle(
@@ -357,6 +414,88 @@ class _EditarPerfilState extends State<EditarPerfil> {
               offset: Offset(1.0, 1.0),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  void showDialogDadosNaoEncontrados() async {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 30),
+              const Text(
+                'Ocorreu um erro! Não foi possível buscar os dados.',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(
+                        context,
+                        Routes.mainPage,
+                      );
+                    },
+                    child: const Text('Ok'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void showDialogAtualizacaoRealizada() async {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 30),
+              const Text(
+                'Perfil atualizado com sucesso!',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(
+                        context,
+                        Routes.mainPage,
+                      );
+                    },
+                    child: const Text('Ok'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
