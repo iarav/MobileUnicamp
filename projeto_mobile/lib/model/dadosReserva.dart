@@ -1,5 +1,4 @@
-import 'reserva.dart';
-
+// ignore: file_names
 class DadosReserva{
   final List<String> nome = ['João', 'Pedro', 'Ricardo', 'Fernanda', 'Jorge', 'Diego'];
   final List<String> telefone = ['16 923450654', '16 949562398', '16 929685420', '16 929485109', '16 911192384', '16 940032i55'];
@@ -8,22 +7,3 @@ class DadosReserva{
   final List<String> combo = ['Combo Básico', 'Combo Silver', 'Combo Básico', 'Combo Silver', 'Combo Gold', 'Combo Premium'];
   final List<String> preco = ['100,00', '200,00', '500,00', '300,00', '600,00', '1000,00'];
 }
-
-  final Reserva reserva1 = Reserva(
-  "João",
-  "123456789",
-  "2023-05-25",
-  "4",
-  "Combo 1",
-  "50.00",
-);
-
-final Reserva reserva2 = Reserva(
-  "Maria",
-  "987654321",
-  "2023-05-26",
-  "2",
-  "Combo 2",
-  "30.00",
-);
-

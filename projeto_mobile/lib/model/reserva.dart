@@ -2,12 +2,13 @@ class Reserva{
   String id = "";
   String nome = "";
   String telefone = "";
-  String data = "";
   String qntPessoas = "";
-  String combo = "";
+  String? combo;
   String preco = "";
+  String dataReserva = "";
 
-  Reserva(this.nome, this.telefone, this.data, this.qntPessoas, this.combo, this.preco);
+  // Reserva(this.nome, this.telefone, this.data, this.qntPessoas, this.combo, this.preco);
+  Reserva();
 
   setId(String id){
     this.id = id;
@@ -17,10 +18,10 @@ class Reserva{
     return {
       "nome": nome,
       "telefone": telefone,
-      "data": data,
       "qntPessoas": qntPessoas,
       "combo": combo,
       "preco": preco,
+      "dataReserva": dataReserva
     };
   }
 }

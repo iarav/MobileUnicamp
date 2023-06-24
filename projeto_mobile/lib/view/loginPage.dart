@@ -190,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                 loginMessage.containsKey('message')
                     ? loginMessage['message']
                     : loginMessage['error'],
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                 ),
                 textAlign: TextAlign.center,

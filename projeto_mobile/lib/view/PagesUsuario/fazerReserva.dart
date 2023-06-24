@@ -1,8 +1,11 @@
 // ignore_for_file: file_names
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import '../../bloc/bloc_state.dart';
 import '../../model/complete_data.dart';
-import '../../model/reservaData.dart';
+import '../../model/reserva.dart';
 import '../../model/routes.dart';
 import '../../model/save_path.dart';
 
@@ -17,7 +20,8 @@ class FazerReserva extends StatefulWidget {
 
 class _FazerReservaState extends State<FazerReserva> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final ReservaData _reservaData = ReservaData();
+  final Reserva _reservaData = Reserva();
+  StreamSubscription<BlocState>? _blocSubscription;
 
   final CompleteModel completeModel = CompleteModel();
 
@@ -59,9 +63,9 @@ class _FazerReservaState extends State<FazerReserva> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Text(
                 "Reserva:",
                 style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
