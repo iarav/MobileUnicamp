@@ -33,6 +33,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
   final Storage storage = Storage();
   String loggedUserId = "";
   String? imagePath;
+  bool isImageChanged = false;
 
   @override
   void initState() {
@@ -181,6 +182,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
     state.setState(() {
       imagePath = path;
     });
+    isImageChanged = true;
   }
 
   void getDadosUsuario(stateWidget) async {
@@ -400,10 +402,10 @@ class _EditarPerfilState extends State<EditarPerfil> {
           _formKey.currentState!.save();
 
           if (imagePath != null) {
-            _dadosUsuarioCadastro.fotoUrl = loggedUserId;
-            storage
-                .uploadFile(imagePath!, loggedUserId)
-                .then((value) => print("Imagem Inserida no storage!"));
+            if (isImageChanged) {
+              _dadosUsuarioCadastro.fotoUrl = loggedUserId;
+              storage.uploadFile(imagePath!, loggedUserId);
+            }
           } else {
             if (_dadosUsuarioCadastro.fotoUrl != "") {
               storage.deleteFile(loggedUserId);
