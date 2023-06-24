@@ -6,6 +6,7 @@ class DadosUsuario {
   String email = "";
   String telefone = "";
   String senha = "";
+  String fotoUrl = "";
 
   toMap() {
     return {
@@ -14,7 +15,8 @@ class DadosUsuario {
       "cpf": cpf,
       "email": email,
       "telefone": telefone,
-      "senha": senha
+      "senha": senha,
+      "fotoUrl": fotoUrl
     };
   }
 
@@ -25,5 +27,6 @@ class DadosUsuario {
     email = dados['email'];
     telefone = dados['telefone'];
     senha = dados['senha'];
+    fotoUrl = dados['fotoUrl'];
   }
 }

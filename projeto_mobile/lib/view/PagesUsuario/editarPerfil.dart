@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -7,6 +10,7 @@ import '../../bloc/bloc_state.dart';
 import '../../model/dadosUsuario.dart';
 import '../../model/routes.dart';
 import '../../model/save_path.dart';
+import '../../provider/storage_service.dart';
 
 class EditarPerfil extends StatefulWidget {
   const EditarPerfil({super.key, required this.title});
@@ -26,6 +30,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
   TextEditingController emailController = TextEditingController();
   TextEditingController telefoneController = TextEditingController();
   TextEditingController senhaController = TextEditingController();
+  final Storage storage = Storage();
   String loggedUserId = "";
   String? imagePath;
 
@@ -33,7 +38,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
   void initState() {
     super.initState();
     loggedUserId = _textformValues.get('loggedUserId');
-    getDadosUsuario();
+    getDadosUsuario(this);
   }
 
   @override
@@ -72,17 +77,28 @@ class _EditarPerfilState extends State<EditarPerfil> {
                   alignment: Alignment.center,
                   children: [
                     imagePath != null
-                        ? Container(
-                            width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: AssetImage(imagePath!),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          )
+                        ? imagePath!.contains("firebasestorage")
+                            ? Container(
+                                width: 150,
+                                height: 150,
+                                child: ClipOval(
+                                  child: Image.network(
+                                    imagePath!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                width: 150,
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: FileImage(File(imagePath!)),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
                         : CircleAvatar(
                             radius: 75,
                             backgroundColor: Color.fromARGB(255, 78, 78, 78),
@@ -105,7 +121,9 @@ class _EditarPerfilState extends State<EditarPerfil> {
                     IconButton(
                       icon: Icon(Icons.upload),
                       color: const Color.fromARGB(255, 0, 72, 132),
-                      onPressed: () {},
+                      onPressed: () {
+                        pickfile(this);
+                      },
                     ),
                   ],
                 ),
@@ -139,7 +157,27 @@ class _EditarPerfilState extends State<EditarPerfil> {
         ));
   }
 
-  void getDadosUsuario() async {
+  void pickfile(state) async {
+    final myimage = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.custom,
+      allowedExtensions: ['png', 'jpg'],
+    );
+
+    if (myimage == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Nenhuma imagem selecionada!')));
+      return;
+    }
+
+    final path = myimage.files.single.path;
+
+    state.setState(() {
+      imagePath = path;
+    });
+  }
+
+  void getDadosUsuario(stateWidget) async {
     if (!mounted) {
       return;
     }
@@ -157,6 +195,15 @@ class _EditarPerfilState extends State<EditarPerfil> {
           emailController.text = _dadosUsuarioCadastro.email;
           telefoneController.text = _dadosUsuarioCadastro.telefone;
           senhaController.text = _dadosUsuarioCadastro.senha;
+          if (_dadosUsuarioCadastro.fotoUrl != "") {
+            String? path =
+                await storage.getProfileImage(_dadosUsuarioCadastro.fotoUrl);
+            if (path != null) {
+              stateWidget.setState(() {
+                imagePath = path;
+              });
+            }
+          }
         } else {
           showDialogDadosNaoEncontrados();
         }
@@ -345,6 +392,14 @@ class _EditarPerfilState extends State<EditarPerfil> {
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
+
+          if (imagePath != null) {
+            _dadosUsuarioCadastro.fotoUrl = loggedUserId;
+            storage
+                .uploadFile(imagePath!, loggedUserId)
+                .then((value) => print("Imagem Inserida no storage!"));
+          }
+
           final bloc = context.read<DadosUsuarioBloc>();
           bloc.add(
               UpdateDadosUsuarioEvent(loggedUserId, _dadosUsuarioCadastro));
