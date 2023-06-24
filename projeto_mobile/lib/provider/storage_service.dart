@@ -25,4 +25,12 @@ class Storage {
       return null;
     }
   }
+
+  Future<void> deleteFile(String fileName) async {
+    try {
+      await storage.ref('perfilUsuarioFoto/$fileName').delete();
+    } on firebase_core.FirebaseException catch (e) {
+      print(e);
+    }
+  }
 }

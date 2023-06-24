@@ -116,7 +116,13 @@ class _EditarPerfilState extends State<EditarPerfil> {
                     IconButton(
                       icon: Icon(Icons.delete),
                       color: Color.fromARGB(255, 128, 9, 0),
-                      onPressed: () {},
+                      onPressed: () {
+                        if (imagePath != null) {
+                          setState(() {
+                            imagePath = null;
+                          });
+                        }
+                      },
                     ),
                     IconButton(
                       icon: Icon(Icons.upload),
@@ -398,6 +404,11 @@ class _EditarPerfilState extends State<EditarPerfil> {
             storage
                 .uploadFile(imagePath!, loggedUserId)
                 .then((value) => print("Imagem Inserida no storage!"));
+          } else {
+            if (_dadosUsuarioCadastro.fotoUrl != "") {
+              storage.deleteFile(loggedUserId);
+              _dadosUsuarioCadastro.fotoUrl = "";
+            }
           }
 
           final bloc = context.read<DadosUsuarioBloc>();
