@@ -7,6 +7,7 @@ import 'minhasReservas.dart';
 import 'opcoesReserva.dart';
 import 'sobreAChurrascaria.dart';
 import 'package:hive/hive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
@@ -38,9 +39,10 @@ class _MainPageState extends State<MainPage> {
                       Icons.logout,
                       color: Color(0xFF05173D),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       SavePath.changePath(Routes.home);
                       _textformValues.put('loggedUserId', null);
+                      await FirebaseAuth.instance.signOut();
                       Navigator.pushNamed(
                         context,
                         Routes.home,

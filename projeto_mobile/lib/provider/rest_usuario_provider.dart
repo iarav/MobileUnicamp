@@ -33,7 +33,6 @@ class RestUsuarioProvider {
   Future<Map<String, dynamic>?> getDadosUsuario(dynamic id) async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/$id.json'));
-
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
@@ -57,6 +56,7 @@ class RestUsuarioProvider {
       final novaChave = responseData['name'];
       //adiciona o HASH gerado pelo Firebase como id do objeto, é preciso dar um update para atualizar o id
       dadosUsuario.id = novaChave;
+      _textformValues.put('loggedUserId', dadosUsuario.id);
 
       final completer = Completer<String>();
 

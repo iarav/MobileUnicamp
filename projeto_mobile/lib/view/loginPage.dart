@@ -2,10 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:projeto_mobile/bloc/dadosUsuario/dadosUsuario_event.dart';
-import '../bloc/dadosUsuario/dadosUsuario_bloc.dart';
 import '../bloc/bloc_state.dart';
+import '../bloc/dadosUsuario/dadosUsuario_bloc.dart';
 import '../model/routes.dart';
 import '../model/save_path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -148,11 +149,16 @@ class _LoginPageState extends State<LoginPage> {
 
             final bloc = DadosUsuarioBloc(context);
             bloc.add(LoginDadosUsuarioEvent(cpf, senha));
-
+            String formattedCPF = cpf.replaceAll(RegExp(r'[^\d]'), '');
             bloc.stream.listen((state) async {
               if (state is LoadedState) {
-                // Atualize a lista _items com os dados do estado LoadedState
                 Map<String, dynamic>? loginMessage = state.dados;
+                if (loginMessage!.containsKey('message')) {
+                  await FirebaseAuth.instance.signInWithEmailAndPassword(
+                    email: '$formattedCPF@cpf.com', // Use o CPF como o email
+                    password: senha,
+                  );
+                }
                 showDialogLogin(loginMessage);
               }
             });
@@ -205,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                       String cpf = _textformValues.get('cpf');
                       String senha = _textformValues.get('senha');
                       if (loginMessage.containsKey('message')) {
-                        if (cpf == '0' && senha == '0') {
+                        if (cpf == '123456' && senha == '123456') {
                           SavePath.changePath(Routes.admMainPage);
                           Navigator.pushNamed(
                             context,

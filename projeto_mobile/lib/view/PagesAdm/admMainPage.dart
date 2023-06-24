@@ -6,6 +6,8 @@ import '../../model/save_path.dart';
 import 'admBloquearData.dart';
 import 'admCalendario.dart';
 import 'admVerReserva.dart';
+import 'package:hive/hive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AdmMainPage extends StatefulWidget {
   const AdmMainPage({super.key, required this.title});
@@ -17,6 +19,7 @@ class AdmMainPage extends StatefulWidget {
 }
 
 class _AdmMainPageState extends State<AdmMainPage> {
+  final Box _textformValues = Hive.box("textform_values");
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -38,8 +41,10 @@ class _AdmMainPageState extends State<AdmMainPage> {
                     Icons.logout,
                     color: Color(0xFF05173D),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     SavePath.changePath(Routes.home);
+                    _textformValues.put('loggedUserId', null);
+                    await FirebaseAuth.instance.signOut();
                     Navigator.pushNamed(
                       context,
                       Routes.home, //define your route name

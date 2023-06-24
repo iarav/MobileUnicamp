@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../model/dadosUsuario.dart';
 import '../../model/routes.dart';
@@ -241,6 +242,9 @@ class _CadastroPageState extends State<CadastroPage> {
             if (value.isEmpty) {
               return "Campo obrigatório.";
             }
+            if (value.length < 6) {
+              return "Senha deve ter 6 caracteres ou mais.";
+            }
           } else {
             return "Insira algum valor.";
           }
@@ -255,18 +259,47 @@ class _CadastroPageState extends State<CadastroPage> {
 
   Widget botaoEntrar(String title) {
     return ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
             final bloc = context.read<DadosUsuarioBloc>();
             _blocSubscription?.cancel();
 
-            bloc.add(InsertDadosUsuarioEvent(_dadosUsuarioCadastro));
+            String formattedCPF =
+                _dadosUsuarioCadastro.cpf.replaceAll(RegExp(r'[^\d]'), '');
 
-            _textformValues.put('cpf', _dadosUsuarioCadastro.cpf);
-            _textformValues.put('senha', _dadosUsuarioCadastro.senha);
+            try {
+              UserCredential userCredential =
+                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                email: '$formattedCPF@cpf.com',
+                password: _dadosUsuarioCadastro.senha,
+              );
 
-            showDialogCadastroEfetuadoComSucesso();
+              User? user = userCredential.user;
+              if (user != null) {
+                bloc.add(InsertDadosUsuarioEvent(_dadosUsuarioCadastro));
+
+                _textformValues.put('cpf', _dadosUsuarioCadastro.cpf);
+                _textformValues.put('senha', _dadosUsuarioCadastro.senha);
+
+                bloc.stream.listen((state) async {
+                  if (state is LoadedState) {
+                    showDialogCadastroEfetuadoComSucesso();
+                  }
+                });
+              } else {
+                print('Erro ao criar o usuário.');
+              }
+            } on FirebaseAuthException catch (e) {
+              if (e.code == 'email-already-in-use') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('CPF já está cadastrado!')));
+              } else {
+                print('Error creating user: $e');
+              }
+            } catch (e) {
+              print('Error creating user: $e');
+            }
           }
         },
         style: ButtonStyle(
