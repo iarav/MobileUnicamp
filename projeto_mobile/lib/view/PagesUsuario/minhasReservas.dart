@@ -1,11 +1,11 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 
 import '../../bloc/bloc_state.dart';
 import '../../bloc/dadosReservas/dadosReservas_bloc.dart';
 import '../../bloc/dadosReservas/dadosReservas_event.dart';
+import '../../model/hive_reservas.dart';
 
 class MinhasReservas extends StatefulWidget {
   const MinhasReservas({super.key});
@@ -15,62 +15,13 @@ class MinhasReservas extends StatefulWidget {
 }
 
 class _MinhasReservasState extends State<MinhasReservas> {
-  final _boxReservas = Hive.box('reservas');
-  List<Map<String, dynamic>> _items = [];
-
-  void _refreshListView() {
-    setState(() {
-      _items = _boxReservas.values
-          .map<Map<String, dynamic>>((dynamic item) => {
-                'id': item['id'],
-                'nome': item['nome'],
-                'telefone': item['telefone'],
-                'qntPessoas': item['qntPessoas'],
-                'combo': item['combo'],
-                'preco': item['preco'],
-                'dataReserva': item['dataReserva'],
-              })
-          .toList();
-    });
-  }
-
-  void reloadData() async {
-    _boxReservas.clear();
-    final bloc = DadosReservasBloc(context);
-
-    bloc.add(GetAllDadosReservasEvent());
-
-    // Escute o estado do bloco
-    bloc.stream.listen((state) async {
-      if (state is LoadedState) {
-        // Atualize a lista _items com os dados do estado LoadedState
-        List<Map<String, dynamic>> itemsInicial = [];
-        if (state.dados != null) {
-          for (var value in state.dados!.values) {
-            if (value is Map<String, dynamic>) {
-              itemsInicial.add({
-                'id': value['id'],
-                'nome': value['nome'],
-                'telefone': value['telefone'],
-                'qntPessoas': value['qntPessoas'],
-                'combo': value['combo'],
-                'preco': value['preco'],
-                'dataReserva': value['dataReserva'],
-              });
-            }
-          }
-          await _boxReservas.addAll(itemsInicial);
-        }
-        _refreshListView();
-      }
-    });
-  }
+  final HiveReservas hive_reservas = HiveReservas();
 
   @override
   void initState() {
-    _boxReservas.clear();
-    reloadData();
-    _refreshListView();
+    hive_reservas.boxReservas.clear();
+    hive_reservas.reloadData(context, this);
+    hive_reservas.refreshListView(this);
     super.initState();
   }
     
@@ -95,7 +46,7 @@ class _MinhasReservasState extends State<MinhasReservas> {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.75,
       child: ListView.builder(
-        itemCount: (_items.length),
+        itemCount: (hive_reservas.items.length),
         itemBuilder: (context, index) {
           return Card(
             elevation: 2, // valor de elevação da sombra
@@ -108,7 +59,7 @@ class _MinhasReservasState extends State<MinhasReservas> {
             child: Column(children: [
               ListTile(
                 title: Text(
-                  "${_items[index]['nome']} - ${_items[index]['telefone']}\n${_items[index]['dataReserva']} - ${_items[index]['qntPessoas']} pessoas\n${_items[index]['combo']} - R\$${_items[index]['preco']}",
+                  "${hive_reservas.items[index]['nome']} - ${hive_reservas.items[index]['telefone']}\n${hive_reservas.items[index]['dataReserva']} - ${hive_reservas.items[index]['qntPessoas']} pessoas\n${hive_reservas.items[index]['combo']} - R\$${hive_reservas.items[index]['preco']}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.black,
@@ -119,7 +70,7 @@ class _MinhasReservasState extends State<MinhasReservas> {
               ),
               ElevatedButton(
               onPressed: (){
-                final idReserva = index < _items.length ? _items[index]['id'] : '';
+                final idReserva = index < hive_reservas.items.length ? hive_reservas.items[index]['id'] : '';
                 showDialog(
                   context: context,
                   builder: (BuildContext context) => dialogCancelarReserva(idReserva, index),
@@ -171,8 +122,8 @@ class _MinhasReservasState extends State<MinhasReservas> {
                   onPressed: () async {
                     final bloc = context.read<DadosReservasBloc>();
                     bloc.add(DeleteDadosReservasEvent(idReserva));
-                    await _boxReservas.deleteAt(index);
-                    _refreshListView();
+                    await hive_reservas.boxReservas.deleteAt(index);
+                    hive_reservas.refreshListView(this);
                     // ignore: use_build_context_synchronously
                     Navigator.pop(context);
                   },

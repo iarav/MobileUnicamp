@@ -24,8 +24,8 @@ void main() async {
   await HiveConfig.start();
   await Hive.openBox('radio_values');
   await Hive.openBox('textform_values');
-  await Hive.openBox('reservas_canceladas');
   await Hive.openBox('reservas');
+  await Hive.openBox('reservas_canceladas');
   runApp(MyApp(lastRoute: lastRoute));
 }
 
