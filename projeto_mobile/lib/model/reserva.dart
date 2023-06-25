@@ -1,5 +1,6 @@
 class Reserva{
   String id = "";
+  String cpfUsuario = "";
   String nome = "";
   String telefone = "";
   String qntPessoas = "";
@@ -16,6 +17,8 @@ class Reserva{
 
   toMap() {
     return {
+      "id": id,
+      "cpfUsuario": cpfUsuario,
       "nome": nome,
       "telefone": telefone,
       "qntPessoas": qntPessoas,

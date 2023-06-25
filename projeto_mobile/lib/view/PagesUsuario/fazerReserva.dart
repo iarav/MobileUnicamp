@@ -2,9 +2,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:projeto_mobile/bloc/dadosReservas/dadosReservas_bloc.dart';
+import 'package:projeto_mobile/bloc/dadosReservas/dadosReservas_event.dart';
 
 import '../../bloc/bloc_state.dart';
+import '../../bloc/dadosUsuario/dadosUsuario_bloc.dart';
+import '../../bloc/dadosUsuario/dadosUsuario_event.dart';
 import '../../model/complete_data.dart';
+import '../../model/dadosUsuario.dart';
 import '../../model/reserva.dart';
 import '../../model/routes.dart';
 import '../../model/save_path.dart';
@@ -20,7 +27,11 @@ class FazerReserva extends StatefulWidget {
 
 class _FazerReservaState extends State<FazerReserva> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final Box _textformValues = Hive.box("textform_values");
   final Reserva _reservaData = Reserva();
+  String loggedUserId = "";
+  final DadosUsuario _dadosUsuarioCadastro = DadosUsuario();
+  
   StreamSubscription<BlocState>? _blocSubscription;
 
   final CompleteModel completeModel = CompleteModel();
@@ -33,6 +44,37 @@ class _FazerReservaState extends State<FazerReserva> {
     'Combo Premium'
   ];
   DateTime? _selectedDate;
+
+  void getDadosUsuario(stateWidget) async {
+    if (!mounted) {
+      return;
+    }
+    final bloc = DadosUsuarioBloc(context);
+
+    bloc.add(GetAllDadosUsuarioEvent(loggedUserId));
+
+    bloc.stream.listen((state) async {
+      if (state is LoadedState) {
+        Map<String, dynamic>? usuario = state.dados;
+        if (usuario != null) {
+          _dadosUsuarioCadastro.converterParaDadosUsuario(usuario);
+          _reservaData.cpfUsuario = _dadosUsuarioCadastro.cpf;
+          _reservaData.nome = _dadosUsuarioCadastro.nome;
+          _reservaData.telefone = _dadosUsuarioCadastro.telefone;
+        } else {
+          ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Não foi possivel recuperar os dados do usuário.')));
+        }
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    loggedUserId = _textformValues.get('loggedUserId');
+    getDadosUsuario(this);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +181,8 @@ class _FazerReservaState extends State<FazerReserva> {
             onChanged: (double value) {
               setState(() {
                 completeModel.quantidadePessoas = value.roundToDouble();
+                var quantPessoas = completeModel.quantidadePessoas.toInt();
+                _reservaData.qntPessoas = quantPessoas.toString();
               });
             }),
         Text("${completeModel.quantidadePessoas.toInt()}"),
@@ -171,6 +215,7 @@ class _FazerReservaState extends State<FazerReserva> {
 
     int preco =
         (precoPorPessoa * completeModel.quantidadePessoas * 0.5).toInt();
+    _reservaData.preco = preco.toString();
 
     return Container(
       decoration: const BoxDecoration(
@@ -220,6 +265,8 @@ class _FazerReservaState extends State<FazerReserva> {
       setState(() {
         _selectedDate = picked;
         justEntered = false;
+        var dataSelecionada = "${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}";
+        _reservaData.dataReserva = dataSelecionada;
       });
     }
   }
@@ -228,6 +275,17 @@ class _FazerReservaState extends State<FazerReserva> {
     return ElevatedButton(
         onPressed: () {
           if (_selectedDate != null && _reservaData.combo != null) {
+            
+            final bloc = context.read<DadosReservasBloc>();
+            // Cancelar o StreamSubscription anterior, se existir
+            _blocSubscription?.cancel();
+            bloc.add(InsertDadosReservasEvent(_reservaData));
+            _blocSubscription = bloc.stream.listen((state) async {
+              if (state is LoadedState) {
+                print("Reserva cadastrada com sucesso!");
+              }
+            });            
+
             showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => dialgoReservaEfeuada(

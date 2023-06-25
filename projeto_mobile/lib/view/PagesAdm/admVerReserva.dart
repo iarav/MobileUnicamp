@@ -42,7 +42,7 @@ class _AdmVerReservaState extends State<AdmVerReserva> {
                       children: [
                         ListTile(
                           title: Text(
-                            "${reservas.nome[index]} - ${reservas.telefone[index]}\n${reservas.data[index]} - ${reservas.qntPessoas[index]}  pessoas\n${reservas.combo[index]} - R\$${reservas.preco[index]}",
+                            "${reservas.nome[index]} - ${reservas.telefone[index]}\n${reservas.data[index]} - ${reservas.qntPessoas[index]} pessoas\n${reservas.combo[index]} - R\$${reservas.preco[index]}",
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Colors.black,

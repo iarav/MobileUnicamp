@@ -1,5 +1,11 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+
+import '../../bloc/bloc_state.dart';
+import '../../bloc/dadosReservas/dadosReservas_bloc.dart';
+import '../../bloc/dadosReservas/dadosReservas_event.dart';
 
 class MinhasReservas extends StatefulWidget {
   const MinhasReservas({super.key});
@@ -9,10 +15,64 @@ class MinhasReservas extends StatefulWidget {
 }
 
 class _MinhasReservasState extends State<MinhasReservas> {
-  final List<String> data = ['24/02/2023', '02/05/2023', '04/02/2023', '15/12/2023', '06/08/2023', '25/12/2022'];
-  final List<String> qntPessoas = ['100', '200', '500', '300', '600', '1000'];
-  final List<String> combo = ['Combo Básico', 'Combo Silver', 'Combo Básico', 'Combo Silver', 'Combo Gold', 'Combo Premium'];
-  final List<String> preco = ['100,00', '200,00', '500,00', '300,00', '600,00', '1000,00'];
+  final _boxReservas = Hive.box('reservas');
+  List<Map<String, dynamic>> _items = [];
+
+  void _refreshListView() {
+    setState(() {
+      _items = _boxReservas.values
+          .map<Map<String, dynamic>>((dynamic item) => {
+                'id': item['id'],
+                'nome': item['nome'],
+                'telefone': item['telefone'],
+                'qntPessoas': item['qntPessoas'],
+                'combo': item['combo'],
+                'preco': item['preco'],
+                'dataReserva': item['dataReserva'],
+              })
+          .toList();
+    });
+  }
+
+  void reloadData() async {
+    _boxReservas.clear();
+    final bloc = DadosReservasBloc(context);
+
+    bloc.add(GetAllDadosReservasEvent());
+
+    // Escute o estado do bloco
+    bloc.stream.listen((state) async {
+      if (state is LoadedState) {
+        // Atualize a lista _items com os dados do estado LoadedState
+        List<Map<String, dynamic>> itemsInicial = [];
+        if (state.dados != null) {
+          for (var value in state.dados!.values) {
+            if (value is Map<String, dynamic>) {
+              itemsInicial.add({
+                'id': value['id'],
+                'nome': value['nome'],
+                'telefone': value['telefone'],
+                'qntPessoas': value['qntPessoas'],
+                'combo': value['combo'],
+                'preco': value['preco'],
+                'dataReserva': value['dataReserva'],
+              });
+            }
+          }
+          await _boxReservas.addAll(itemsInicial);
+        }
+        _refreshListView();
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    _boxReservas.clear();
+    reloadData();
+    _refreshListView();
+    super.initState();
+  }
     
   @override
   Widget build(BuildContext context) {
@@ -21,73 +81,67 @@ class _MinhasReservasState extends State<MinhasReservas> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(height: 20,),
-        Expanded(child: Container(child: myList())),
+        Expanded(child: BlocBuilder<DadosReservasBloc, BlocState>(
+            builder: (context, state) {
+              return listaReservas();
+            }
+          )
+        ),
       ],
     );
   }
 
-  Widget myList(){
-    return ListView.separated(
-      padding: const EdgeInsets.all(15),
-      itemCount: data.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Container(
-          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 158, 177, 181),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: ListTile(
-            title: Column(
-              children: [
-                Text(
-                  '${data[index]} - ${qntPessoas[index]}',
-                  style: const TextStyle( 
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  '${combo[index]} - ${preco[index]}',
-                  style: const TextStyle( 
-                    color: Colors.black,
-                    fontSize: 18,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+  Widget listaReservas(){
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.75,
+      child: ListView.builder(
+        itemCount: (_items.length),
+        itemBuilder: (context, index) {
+          return Card(
+            elevation: 2, // valor de elevação da sombra
+            shadowColor: Colors.black26,
+            shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(12.0), // borda arredondada
             ),
-            subtitle: TextButton(
-              child: const Text(
-                'Cancelar Reserva',
-                style: TextStyle( 
-                  color: Color.fromARGB(255, 144, 10, 0),
+            color: const Color.fromARGB(255, 158, 177, 181),
+            child: Column(children: [
+              ListTile(
+                title: Text(
+                  "${_items[index]['nome']} - ${_items[index]['telefone']}\n${_items[index]['dataReserva']} - ${_items[index]['qntPessoas']} pessoas\n${_items[index]['combo']} - R\$${_items[index]['preco']}",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontFamily: "inder",
+                  ),
                 ),
               ),
+              ElevatedButton(
               onPressed: (){
-                showDialog<String>(
+                final idReserva = index < _items.length ? _items[index]['id'] : '';
+                showDialog(
                   context: context,
-                  builder: (BuildContext context) => dialgoCancelarReserva()
+                  builder: (BuildContext context) => dialogCancelarReserva(idReserva, index),
                 );
               },
-            ),
-            onTap: () {
-              
-            },
-          ),
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return Container(
-          height: 13, // Defina a altura do espaço aqui
-          color: Colors.transparent,
-        );
-      },
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                     Color.fromARGB(255, 1, 29, 62),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: Text("Cancelar Reserva"),
+              ),
+            ]),
+          );
+        }
+      )
     );
   }
 
-  Widget dialgoCancelarReserva(){
+  Widget dialogCancelarReserva(dynamic idReserva, dynamic index){
     return Dialog(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -114,7 +168,12 @@ class _MinhasReservasState extends State<MinhasReservas> {
                   child: const Text('Cancelar'),
                 ),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final bloc = context.read<DadosReservasBloc>();
+                    bloc.add(DeleteDadosReservasEvent(idReserva));
+                    await _boxReservas.deleteAt(index);
+                    _refreshListView();
+                    // ignore: use_build_context_synchronously
                     Navigator.pop(context);
                   },
                   child: const Text('Cancelar Reserva'),
