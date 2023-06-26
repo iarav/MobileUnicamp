@@ -61,6 +61,7 @@ class _FazerReservaState extends State<FazerReserva> {
           _reservaData.cpfUsuario = _dadosUsuarioCadastro.cpf;
           _reservaData.nome = _dadosUsuarioCadastro.nome;
           _reservaData.telefone = _dadosUsuarioCadastro.telefone;
+          _reservaData.qntPessoas = "100";
         } else {
           ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Não foi possivel recuperar os dados do usuário.')));
