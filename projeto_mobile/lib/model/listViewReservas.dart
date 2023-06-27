@@ -8,7 +8,8 @@ import '../bloc/dadosReservas/dadosReservas_event.dart';
 
 class ListViewReservas extends StatefulWidget {
   final String cpf;
-  final String? calendario; //essa variavel vai guardar a data do calendario. Caso nao seja a tela do calendario chamando, retorna null
+  final String?
+      calendario; //essa variavel vai guardar a data do calendario. Caso nao seja a tela do calendario chamando, retorna null
 
   ListViewReservas({Key? key, required this.cpf, this.calendario})
       : super(key: key);
@@ -25,7 +26,7 @@ class _ListViewReservasState extends State<ListViewReservas> {
   List<Map<String, dynamic>> _items = [];
 
   void _refreshListView() {
-    if(!mounted){
+    if (!mounted) {
       return;
     }
     setState(() {
@@ -71,18 +72,20 @@ class _ListViewReservasState extends State<ListViewReservas> {
             }
           }
           if (cpfUsuario == "123456") {
-            if(dataCalendario != null) {
-              itemsInicial = itemsInicial.where((item) => item['dataReserva'] == dataCalendario).toList();
+            if (dataCalendario != null) {
+              itemsInicial = itemsInicial
+                  .where((item) => item['dataReserva'] == dataCalendario)
+                  .toList();
+              await _boxReservas.addAll(itemsInicial);
+            } else {
+              //adiciona todos na _boxReservas
               await _boxReservas.addAll(itemsInicial);
             }
-            else{
-              //adiciona todos na _boxReservas 
-              await _boxReservas.addAll(itemsInicial);
-            }
-          }
-          else{
+          } else {
             // apenas itens iguais ao cpfUsuario são adicionados a _boxReservas
-            itemsInicial = itemsInicial.where((item) => item['cpfUsuario'] == cpfUsuario).toList();
+            itemsInicial = itemsInicial
+                .where((item) => item['cpfUsuario'] == cpfUsuario)
+                .toList();
             await _boxReservas.addAll(itemsInicial);
           }
         }
@@ -122,8 +125,6 @@ class _ListViewReservasState extends State<ListViewReservas> {
   Widget listaReservas(cpf, dataCalendario) {
     //USUÁRIO ADMINISTRADOR
     if (cpf == "123456") {
-      print("items: $_items");
-      print("administrador | dataCalendario: ${dataCalendario}");
       return SizedBox(
           width: MediaQuery.of(context).size.width * 0.75,
           child: ListView.builder(
@@ -177,7 +178,6 @@ class _ListViewReservasState extends State<ListViewReservas> {
 
     //USUÁRIO COMUM
     else {
-      print("usuário comum");
       return SizedBox(
           width: MediaQuery.of(context).size.width * 0.75,
           child: ListView.builder(
