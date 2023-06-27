@@ -5,6 +5,8 @@ import 'package:hive/hive.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../bloc/bloc_state.dart';
+import '../../bloc/dadosReservas/dadosReservas_bloc.dart';
+import '../../bloc/dadosReservas/dadosReservas_event.dart';
 import '../../bloc/dadosUsuario/dadosUsuario_bloc.dart';
 import '../../bloc/dadosUsuario/dadosUsuario_event.dart';
 import '../../model/dadosUsuario.dart';
@@ -21,6 +23,7 @@ class _AdmCalendarioState extends State<AdmCalendario> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  String diaSelecionado = "";
 
   final Box _textformValues = Hive.box("textform_values");
   String loggedUserId = "";
@@ -69,6 +72,8 @@ class _AdmCalendarioState extends State<AdmCalendario> {
               setState(() {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay; // update `_focusedDay` here as well
+                diaSelecionado =
+                    "${focusedDay.day}/${focusedDay.month}/${focusedDay.year}";
               });
             },
             onFormatChanged: (format) {
@@ -85,9 +90,18 @@ class _AdmCalendarioState extends State<AdmCalendario> {
           ),
           Expanded(
             child: _dadosUsuarioCadastro.cpf != ""
-                ? BlocBuilder<DadosUsuarioBloc, BlocState>(
+                ? BlocBuilder<DadosReservasBloc, BlocState>(
                     builder: (context, state) {
-                    return ListViewReservas(cpf: _dadosUsuarioCadastro.cpf);
+                    if (diaSelecionado == "") {
+                      return const Center(
+                        child: Text("Nenhum dia Selecionado."),
+                      );
+                    } else {
+                      print("Dia selecionado: ${diaSelecionado}");
+                      return ListViewReservas(
+                          cpf: _dadosUsuarioCadastro.cpf,
+                          calendario: diaSelecionado);
+                    }
                   })
                 : const SizedBox(
                     height: 50.0,

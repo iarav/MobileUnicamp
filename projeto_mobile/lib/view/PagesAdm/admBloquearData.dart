@@ -29,6 +29,9 @@ class _AdmBloquearDataState extends State<AdmBloquearData> {
   List<Map<String, dynamic>> _items = [];
 
   void _refreshListView() {
+  if(!mounted){
+      return;
+    }
     setState(() {
       _items = _boxReservasCanceladas.values
           .map<Map<String, dynamic>>((dynamic item) => {
