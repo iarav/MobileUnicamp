@@ -10,15 +10,17 @@ class ListViewReservas extends StatefulWidget {
   final String cpf;
   final String? calendario; //essa variavel vai guardar a data do calendario. Caso nao seja a tela do calendario chamando, retorna null
 
-  const ListViewReservas({Key? key, required this.cpf, this.calendario})
+  ListViewReservas({Key? key, required this.cpf, this.calendario})
       : super(key: key);
   @override
   State<ListViewReservas> createState() => _ListViewReservasState();
 }
 
 class _ListViewReservasState extends State<ListViewReservas> {
-  late String cpfUsuario = widget.cpf;
-  late String? dataCalendario = widget.calendario;
+  // late String cpfUsuario = widget.cpf;
+  // late String? dataCalendario = widget.calendario;
+  late String? cpfUsuario;
+  late String? dataCalendario;
   final _boxReservas = Hive.box('reservas');
   List<Map<String, dynamic>> _items = [];
 
@@ -91,11 +93,24 @@ class _ListViewReservasState extends State<ListViewReservas> {
 
   @override
   void initState() {
+    cpfUsuario = widget.cpf;
+    dataCalendario = widget.calendario;
     _boxReservas.clear();
     reloadData();
     _refreshListView();
     super.initState();
   }
+
+  @override
+  void didUpdateWidget(ListViewReservas oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    cpfUsuario = widget.cpf;
+    dataCalendario = widget.calendario;
+    _boxReservas.clear();
+    reloadData();
+    _refreshListView();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -107,6 +122,7 @@ class _ListViewReservasState extends State<ListViewReservas> {
   Widget listaReservas(cpf, dataCalendario) {
     //USUÁRIO ADMINISTRADOR
     if (cpf == "123456") {
+      print("items: $_items");
       print("administrador | dataCalendario: ${dataCalendario}");
       return SizedBox(
           width: MediaQuery.of(context).size.width * 0.75,

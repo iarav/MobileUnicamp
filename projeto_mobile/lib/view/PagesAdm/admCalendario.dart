@@ -6,7 +6,6 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../bloc/bloc_state.dart';
 import '../../bloc/dadosReservas/dadosReservas_bloc.dart';
-import '../../bloc/dadosReservas/dadosReservas_event.dart';
 import '../../bloc/dadosUsuario/dadosUsuario_bloc.dart';
 import '../../bloc/dadosUsuario/dadosUsuario_event.dart';
 import '../../model/dadosUsuario.dart';
