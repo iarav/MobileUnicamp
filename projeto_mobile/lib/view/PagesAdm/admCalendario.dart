@@ -76,6 +76,7 @@ class _AdmCalendarioState extends State<AdmCalendario> {
   @override
   void initState() {
     loggedUserId = _textformValues.get('loggedUserId');
+    diaSelecionado = DateFormat('dd/MM/yyyy').format(DateTime.now());
     getDadosUsuario(this);
     getDatas();
     super.initState();
@@ -121,8 +122,9 @@ class _AdmCalendarioState extends State<AdmCalendario> {
               setState(() {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay; // update `_focusedDay` here as well
-                diaSelecionado =
-                    "${focusedDay.day}/${focusedDay.month}/${focusedDay.year}";
+                diaSelecionado = DateFormat('dd/MM/yyyy').format(_focusedDay);
+                //diaSelecionado =
+                //    "${focusedDay.day}/${focusedDay.month}/${focusedDay.year}";
               });
             },
             onFormatChanged: (format) {

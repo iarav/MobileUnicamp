@@ -103,7 +103,7 @@ class _SelecaoDataState extends State<SelecaoData> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2023),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
     if (picked != null && picked != _selectedDate) {
