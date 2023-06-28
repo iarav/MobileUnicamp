@@ -6,8 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../bloc/bloc_state.dart';
-import '../../bloc/dadosReservas/dadosReservas_bloc.dart';
-import '../../bloc/dadosReservas/dadosReservas_event.dart';
 import '../../bloc/dataBloqueada/dataBloqueada_bloc.dart';
 import '../../bloc/dataBloqueada/dataBloqueada_event.dart';
 import '../../model/routes.dart';
@@ -221,49 +219,32 @@ class _SelecaoDataState extends State<SelecaoData> {
   }
 
   Future<bool> verificarDisponibilidade(dataParaVerificar) async {
-    final blocReservas = context.read<DadosReservasBloc>();
     final blocReservasBloqueadas = context.read<DataBloqueadaBloc>();
     List<Map<String, dynamic>> datasNaoDisponiveis = [];
 
     late bool disponivel;
 
-    StreamSubscription? reservasSubscription;
     StreamSubscription? bloqueadasSubscription;
 
     Completer<bool> meuCompleter = Completer<bool>();
 
-    //ADICIONA EM DATASNAODISPONIVEIS DE RESERVAS
-    blocReservas.add(GetAllDadosReservasEvent());
-    reservasSubscription = blocReservas.stream.listen((state1) async {
-      if (state1 is LoadedState) {
-        if (state1.dados != null) {
-          for (var value in state1.dados!.values) {
-            if (value is Map<String, dynamic>) {
-              datasNaoDisponiveis.add({
-                'datas': value['dataReserva'],
-              });
-            }
-          }
-
-          //ADICIONA EM DATASNAODISPONIVEIS DE DATAS BLOQUEADAS
-          blocReservasBloqueadas.add(GetAllDataBloqueadaEvent());
+          blocReservasBloqueadas.add(GetDatasIndisponiveisEvent());
           bloqueadasSubscription =
-              blocReservasBloqueadas.stream.listen((state2) async {
-            if (state2 is LoadedState) {
-              if (state2.dados != null) {
-                for (var value in state2.dados!.values) {
+              blocReservasBloqueadas.stream.listen((state) async {
+            if (state is LoadedState) {
+              if (state.dados != null) {
+                for (var value in state.dados!.values) {
                   if (value is Map<String, dynamic>) {
                     datasNaoDisponiveis.add({
-                      'datas': value['data'],
+                      'datas': value['dataIndisponivel'],
                     });
                   }
                 }
               }
             }
-            if (reservasSubscription != null &&
-                bloqueadasSubscription != null) {
-              // print("DATAS INDISPONÍVEIS: ");
-              // print(datasNaoDisponiveis);
+            if (bloqueadasSubscription != null && datasNaoDisponiveis.isNotEmpty) {
+              print("DATAS INDISPONÍVEIS: ");
+              print(datasNaoDisponiveis);
 
               //VERIFICA SE A DATA ESTÁ OU NÃO DISPONÍVEL
               bool dataEstaDisponivel = datasNaoDisponiveis.any((map) {
@@ -277,9 +258,6 @@ class _SelecaoDataState extends State<SelecaoData> {
               }
             }
           });
-        }
-      }
-    });
 
     await meuCompleter.future;
     if (meuCompleter.isCompleted) {

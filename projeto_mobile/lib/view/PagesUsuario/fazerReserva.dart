@@ -11,6 +11,8 @@ import 'package:projeto_mobile/bloc/dadosReservas/dadosReservas_event.dart';
 import '../../bloc/bloc_state.dart';
 import '../../bloc/dadosUsuario/dadosUsuario_bloc.dart';
 import '../../bloc/dadosUsuario/dadosUsuario_event.dart';
+import '../../bloc/dataBloqueada/dataBloqueada_bloc.dart';
+import '../../bloc/dataBloqueada/dataBloqueada_event.dart';
 import '../../model/complete_data.dart';
 import '../../model/dadosUsuario.dart';
 import '../../model/reserva.dart';
@@ -32,7 +34,8 @@ class _FazerReservaState extends State<FazerReserva> {
   final Reserva _reservaData = Reserva();
   String loggedUserId = "";
   final DadosUsuario _dadosUsuarioCadastro = DadosUsuario();
-  
+  late bool estaDisponivel;
+
   StreamSubscription<BlocState>? _blocSubscription;
 
   final CompleteModel completeModel = CompleteModel();
@@ -64,8 +67,9 @@ class _FazerReservaState extends State<FazerReserva> {
           _reservaData.telefone = _dadosUsuarioCadastro.telefone;
           _reservaData.qntPessoas = "100";
         } else {
-          ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Não foi possivel recuperar os dados do usuário.')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content:
+                  Text('Não foi possivel recuperar os dados do usuário.')));
         }
       }
     });
@@ -275,24 +279,37 @@ class _FazerReservaState extends State<FazerReserva> {
 
   Widget botaoFazerReserva() {
     return ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           if (_selectedDate != null && _reservaData.combo != null) {
-            
-            final bloc = context.read<DadosReservasBloc>();
-            // Cancelar o StreamSubscription anterior, se existir
-            _blocSubscription?.cancel();
-            bloc.add(InsertDadosReservasEvent(_reservaData));
-            _blocSubscription = bloc.stream.listen((state) async {
-              if (state is LoadedState) {
-                print("Reserva cadastrada com sucesso!");
-              }
-            });            
+            estaDisponivel = await verificarDisponibilidade(
+                DateFormat('dd/MM/yyyy').format(_selectedDate!));
+            print("if");
+            if (estaDisponivel) {
+              final bloc = context.read<DadosReservasBloc>();
+              // Cancelar o StreamSubscription anterior, se existir
+              _blocSubscription?.cancel();
+              bloc.add(InsertDadosReservasEvent(_reservaData));
+              _blocSubscription = bloc.stream.listen((state) async {
+                if (state is LoadedState) {
+                  print("Reserva cadastrada com sucesso!");
+                }
+              });
 
-            showDialog<String>(
-                context: context,
-                builder: (BuildContext context) => dialgoReservaEfeuada(
-                    'A reserva foi efetuada com sucesso!'));
+              // ignore: use_build_context_synchronously
+              showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => dialgoReservaEfeuada(
+                      'A reserva foi efetuada com sucesso!'));
+            } else {
+              // ignore: use_build_context_synchronously
+              showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => dialgoReservaEfeuada(
+                      'A data está indisponível!\nSelecione outra data.'));
+            }
           } else {
+            print("AQUI");
+            // ignore: use_build_context_synchronously
             showDialog<String>(
                 context: context,
                 builder: (BuildContext context) =>
@@ -316,6 +333,55 @@ class _FazerReservaState extends State<FazerReserva> {
             fontSize: 15,
           ),
         ));
+  }
+
+  Future<bool> verificarDisponibilidade(dataParaVerificar) async {
+    final blocReservasBloqueadas = context.read<DataBloqueadaBloc>();
+    List<Map<String, dynamic>> datasNaoDisponiveis = [];
+
+    late bool disponivel;
+
+    StreamSubscription? bloqueadasSubscription;
+
+    Completer<bool> meuCompleter = Completer<bool>();
+
+    blocReservasBloqueadas.add(GetDatasIndisponiveisEvent());
+    bloqueadasSubscription =
+        blocReservasBloqueadas.stream.listen((state) async {
+      if (state is LoadedState) {
+        if (state.dados != null) {
+          for (var value in state.dados!.values) {
+            if (value is Map<String, dynamic>) {
+              datasNaoDisponiveis.add({
+                'datas': value['dataIndisponivel'],
+              });
+            }
+          }
+        }
+      }
+      if (bloqueadasSubscription != null && datasNaoDisponiveis.isNotEmpty) {
+        print("DATAS INDISPONÍVEIS: ");
+        print(datasNaoDisponiveis);
+
+        //VERIFICA SE A DATA ESTÁ OU NÃO DISPONÍVEL
+        bool dataEstaDisponivel = datasNaoDisponiveis.any((map) {
+          String data = map['datas'] as String;
+          return data == dataParaVerificar;
+        });
+        disponivel = !dataEstaDisponivel;
+
+        if (!meuCompleter.isCompleted) {
+          meuCompleter.complete(disponivel);
+        }
+      }
+    });
+
+    await meuCompleter.future;
+    if (meuCompleter.isCompleted) {
+      return disponivel;
+    } else {
+      throw Exception('Erro ao obter a disponibilidade');
+    }
   }
 
   Widget dialgoReservaEfeuada(String texto) {

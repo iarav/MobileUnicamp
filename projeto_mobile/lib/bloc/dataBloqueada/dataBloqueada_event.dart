@@ -4,6 +4,8 @@ abstract class DataBloqueadaEvent {}
 
 class GetAllDataBloqueadaEvent extends DataBloqueadaEvent {}
 
+class GetDatasIndisponiveisEvent extends DataBloqueadaEvent {}
+
 class InsertDataBloqueadaEvent extends DataBloqueadaEvent {
   final DataBloqueada data;
   InsertDataBloqueadaEvent(this.data);
