@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:projeto_mobile/bloc/dadosReservas/dadosReservas_bloc.dart';
 import 'package:projeto_mobile/bloc/dadosReservas/dadosReservas_event.dart';
 
@@ -241,7 +242,7 @@ class _FazerReservaState extends State<FazerReserva> {
         Text(
           _selectedDate == null
               ? '__/__/____'
-              : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
+              : DateFormat('dd/MM/yyyy').format(_selectedDate!),
           style: const TextStyle(
             fontSize: 22,
           ),
@@ -266,7 +267,7 @@ class _FazerReservaState extends State<FazerReserva> {
       setState(() {
         _selectedDate = picked;
         justEntered = false;
-        var dataSelecionada = "${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}";
+        var dataSelecionada = DateFormat('dd/MM/yyyy').format(_selectedDate!);
         _reservaData.dataReserva = dataSelecionada;
       });
     }

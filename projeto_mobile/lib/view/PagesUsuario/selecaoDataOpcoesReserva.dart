@@ -57,14 +57,23 @@ class _SelecaoDataState extends State<SelecaoData> {
               onPressed: () async => {
                 if (_selectedDate != null)
                   {
-                    dialogDisponibilidade(true),
+                    estaDisponivel = await verificarDisponibilidade(
+                        DateFormat('dd/MM/yyyy').format(_selectedDate!)),
+                    if (estaDisponivel)
+                      {
+                        print("Disponível"),
+                        dialogDisponibilidade(true),
+                      }
+                    else
+                      {
+                        print("Não está disponível"),
+                        dialogDisponibilidade(false),
+                      }
                   }
                 else
                   {
-                    print("saaaaa"),
-                    estaDisponivel = await verificarDisponibilidade(),
-                    print("Esta disponivel: ${estaDisponivel}"),
-                    // dialogDisponibilidade(false),
+                    print("Data não selecionada"),
+                    dialogDisponibilidade(null),
                   }
               },
               style: ElevatedButton.styleFrom(
@@ -133,7 +142,7 @@ class _SelecaoDataState extends State<SelecaoData> {
     );
   }
 
-  Future<String?> dialogDisponibilidade(disponivel) {
+  Future<String?> dialogDisponibilidade(bool? disponivel) {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => Dialog(
@@ -153,14 +162,22 @@ class _SelecaoDataState extends State<SelecaoData> {
                       ),
                       textAlign: TextAlign.center,
                     )
-                  : //senão faça
-                  const Text(
-                      'Selecione uma data!',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+                  : (disponivel == false)
+                      ? //senão faça
+                      const Text(
+                          'A data está indisponível!\nSelecione outra data.',
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                          textAlign: TextAlign.center,
+                        )
+                      : const Text(
+                          'Selecione uma data!',
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
               const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -187,7 +204,6 @@ class _SelecaoDataState extends State<SelecaoData> {
                         )
                       ]
                     : // senão faça
-
                     [
                         TextButton(
                           onPressed: () {
@@ -203,10 +219,8 @@ class _SelecaoDataState extends State<SelecaoData> {
       ),
     );
   }
-  
-  Completer<bool> meuCompleter = Completer<bool>();
 
-  Future<bool> verificarDisponibilidade() async {
+  Future<bool> verificarDisponibilidade(dataParaVerificar) async {
     final blocReservas = context.read<DadosReservasBloc>();
     final blocReservasBloqueadas = context.read<DataBloqueadaBloc>();
     List<Map<String, dynamic>> datasNaoDisponiveis = [];
@@ -215,6 +229,8 @@ class _SelecaoDataState extends State<SelecaoData> {
 
     StreamSubscription? reservasSubscription;
     StreamSubscription? bloqueadasSubscription;
+
+    Completer<bool> meuCompleter = Completer<bool>();
 
     //ADICIONA EM DATASNAODISPONIVEIS DE RESERVAS
     blocReservas.add(GetAllDadosReservasEvent());
@@ -231,7 +247,8 @@ class _SelecaoDataState extends State<SelecaoData> {
 
           //ADICIONA EM DATASNAODISPONIVEIS DE DATAS BLOQUEADAS
           blocReservasBloqueadas.add(GetAllDataBloqueadaEvent());
-          bloqueadasSubscription = blocReservasBloqueadas.stream.listen((state2) async {
+          bloqueadasSubscription =
+              blocReservasBloqueadas.stream.listen((state2) async {
             if (state2 is LoadedState) {
               if (state2.dados != null) {
                 for (var value in state2.dados!.values) {
@@ -243,10 +260,10 @@ class _SelecaoDataState extends State<SelecaoData> {
                 }
               }
             }
-            if (reservasSubscription != null && bloqueadasSubscription != null) {
-              print("DATAS INDISPONÍVEIS: ");
-              print(datasNaoDisponiveis);
-              String dataParaVerificar = "30/06/2023";
+            if (reservasSubscription != null &&
+                bloqueadasSubscription != null) {
+              // print("DATAS INDISPONÍVEIS: ");
+              // print(datasNaoDisponiveis);
 
               //VERIFICA SE A DATA ESTÁ OU NÃO DISPONÍVEL
               bool dataEstaDisponivel = datasNaoDisponiveis.any((map) {
@@ -265,6 +282,10 @@ class _SelecaoDataState extends State<SelecaoData> {
     });
 
     await meuCompleter.future;
-    return disponivel;
+    if (meuCompleter.isCompleted) {
+      return disponivel;
+    } else {
+      throw Exception('Erro ao obter a disponibilidade');
+    }
   }
 }
